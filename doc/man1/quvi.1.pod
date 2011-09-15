@@ -1,0 +1,273 @@
+=head1 NAME
+
+quvi - query media tool
+
+=head1 SYNOPSIS
+
+quvi [options] E<lt>url | file ...E<gt>
+
+=head1 DESCRIPTION
+
+quvi is a command line tool for parsing flash media stream URLs.
+It supports many websites including YouTube and Dailymotion.
+
+=head1 OPTIONS
+
+=head2 Notes
+
+quvi reads standard input by default. It can also read the URLs from
+files but expects each URL to be separated by a newline character.
+
+=head2 Options
+
+=over 4
+
+=item B<-h, --help>
+
+Print help and exit.
+
+=item B<--version>
+
+Print program version and exit.
+
+=item B<--license>
+
+Print license and exit.
+
+=item B<--support> [I<arg>]
+
+Print supported hosts and exit. If an I<arg> is specified, the program
+checks, instead, whether the I<arg> is supported. For checking which
+formats are available to an URL, use C<--query-formats> instead.
+
+=item B<--xml>
+
+Print the media details in XML.
+
+=item B<-q, --quiet>
+
+Turn off all output printed to stderr (excl. any errors). If
+C<--verbose-libcurl> is enabled, libcurl will continue to print messages to
+stderr. The media details will still be printed to stdout.
+
+=item B<--verbose-libcurl>
+
+Turn on libcurl verbose mode.
+
+=item B<--exec> I<arg>
+
+Invoke I<arg> after each successfully parsed URL. Each occurence of the
+following specifiers will be replaced (and quoted with double quatation
+marks) within the I<arg>:
+
+ %t  Page title
+ %u  Media URL
+
+=item B<-r, --no-resolve>
+
+Do not resolve URL redirections. If enabled, breaks the compatibility
+with most "shortened" URLs. Webscripts that use redirection resolving
+explicitly, ignore this switch.
+
+=item B<-n, --no-verify>
+
+Do not verify media stream URL after parsing. The verification is
+specific to HTTP and ignored with other protocols. If enabled, some
+of the media details, e.g. content length, will be incomplete.
+
+=item B<--category-http>
+
+Enable category HTTP webscripts. This is the default category.
+
+=item B<--category-mms>
+
+Enable category MMS webscripts.
+
+=item B<--category-rtsp>
+
+Enable category RTSP webscripts.
+
+=item B<--category-rtmp>
+
+Enable category RTMP webscripts.
+
+=item B<--category-all>
+
+Enable all categories of webscripts.
+
+=item B<-F, --query-formats>
+
+Query available formats to an URL.
+
+=item B<-f, --format> I<arg> (=default)
+
+Get format I<arg> of the media. The resulting format may be different
+from the I<arg> if the library was unable to get the requested format.
+See also C<--query-formats>.
+
+=item B<--agent> I<arg> (=Mozilla/5.0)
+
+Identify quvi as I<arg> to the HTTP servers. Default is "Mozilla/5.0".
+
+=item B<--proxy> I<arg>
+
+Use proxy for HTTP connections, e.g. "http://foo:1234".
+You can also define http_proxy environment setting to
+achieve the same.
+
+=item B<--no-proxy>
+
+Disable use of HTTP proxy completely. Proxy will not be used even
+if it is defined in http_proxy.
+
+=item B<--connect-timeout> I<seconds>
+
+Maximum seconds allowed connection to server take.
+Default is 30.
+
+=back
+
+=head1 EXAMPLES
+
+Put the URLs inside quotes when they are specified as the command line
+arguments to the program. This is the recommended practice.
+
+=over 4
+
+=item quvi "URL"
+
+Typical use.
+
+=item quvi --xml "URL"
+
+Same but print the results in XML.
+
+=item quvi -f best "URL"
+
+Get for the best available format of the media. This assumes E<gt>1
+formats are supported, otherwise will fallback to default format.
+
+=item quvi -F "URL"
+
+Query available formats to the URL. Use one of the returned format
+strings from this list with C<--format>.
+
+=item quvi --support
+
+Print supported website in the HTTP category and exit.
+
+=item quvi --support --category-rtmp
+
+Same but print only those from the RTMP category.
+
+=item quvi --support "URL"
+
+Check whether the URL is supported. This does not require an Internet
+connection but will fail with most "shortened" URLs.
+
+=back
+
+=head1 FILES
+
+=over 4
+
+=item B<$HOME/.quvirc>
+
+Most of the command line options can also be defined in the
+configuration file. For example:
+
+ agent = some_agent/1.0     # --agent
+ proxy = http://foo:1234    # --proxy
+ no-verify                  # --no-verify
+ verbose-libcurl            # --verbose-libcurl
+
+You can also use $QUVI_HOME instead of $HOME.
+
+=back
+
+=head1 ENVIRONMENT
+
+=head2 quvi
+
+=over 4
+
+=item B<QUVI_HOME>
+
+Path to the directory with the configuration file. If set, quvi
+command uses this instead of $HOME.
+
+=back
+
+=head2 libquvi
+
+=over 4
+
+=item B<LIBQUVI_SCRIPTSDIR>
+
+Path to the libquvi-scripts directory. Overrides the libquvi default
+search paths for the scripts, e.g.:
+
+ env LIBQUVI_SCRIPTSDIR=/dir/with/quvi/lua/scripts/ quvi
+
+Make sure it points to a directory containing the lua/ directory with the
+expected "util/*.lua" and "website/quvi/*.lua" scripts that are normally
+installed with libquvi-scripts.
+
+Refer to the libquvi API documentation at
+
+  <http://quvi.sourceforge.net/doc/>
+
+for a tutorial that covers these steps.
+
+=item B<LIBQUVI_SHOW_SCANDIR>
+
+If set, libquvi prints the lua script search paths to the stderr.
+
+=item B<LIBQUVI_SHOW_SCRIPT>
+
+If set, the lua scripts found by libquvi are printed to the stderr.
+
+ env LIBQUVI_SHOW_SCRIPT=1 quvi
+
+=back
+
+=head1 EXIT STATUS
+
+quvi exits with 0 on success and E<gt>0 if an error occurred.
+
+ QUVI_OK               = 0x00
+ QUVI_MEM              = 0x01, Memory allocation failed
+                           (or invalid quvi command line option)
+ QUVI_BADHANDLE        = 0x02, Bad session handle
+ QUVI_INVARG           = 0x03, Invalid function (or command line) arg
+ QUVI_CURLINIT         = 0x04, libcurl initialization failed
+ QUVI_LAST             = 0x05, Indicates end of list iteration
+ QUVI_ABORTEDBYCALLBACK= 0x06, Aborted by callback function
+ QUVI_LUAINIT          = 0x07, Lua initialization failure
+ QUVI_NOLUAWEBSITE     = 0x08, Failed to find lua webscripts
+ QUVI_NOLUAUTIL        = 0x09, Failed to find the utility scripts
+ --
+ QUVI_NOSUPPORT        = 0x41, libquvi does not support the host
+ QUVI_CALLBACK         = 0x42, network callback error occurred
+ QUVI_ICONV            = 0x43, libiconv error occurred
+ QUVI_LUA              = 0x44, lua error occurred
+
+=head1 WWW
+
+ Home  : http://quvi.sourceforge.net/
+ gitweb: http://repo.or.cz/w/quvi-tool.git
+
+=head1 LICENSE
+
+quvi is free software, licensed under the LGPLv2.1+.
+
+=head1 SEE ALSO
+
+C<libquvi(3)>, C<libquvi-scripts(7)>
+
+=head1 AUTHOR
+
+Toni Gundogdu E<lt>legatvs at sign gmail comE<gt>
+
+Thanks to all those who have contributed to the project by sending patches,
+reporting bugs and writing feedback. You know who you are.
