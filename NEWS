@@ -1,0 +1,12 @@
+
+0.4.0  Wed Oct 05 2011  Toni Gundogdu
+
+Changes:
+  - Split from "quvi", new repo at <http://repo.or.cz/w/quvi-tool.git>
+  - Make --category-all new default (prev. --category-http)
+  - Extend --exec to support %t, page title (#41)
+  - Remove deprecated "--format (help|list)"
+  - Remove deprecated "--no-shortened"
+  - Remove deprecated "--old"
+
+For earlier notes, see <http://repo.or.cz/w/quvi.git/blob/HEAD:/NEWS>.
