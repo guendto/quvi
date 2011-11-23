@@ -567,8 +567,78 @@ static void dump_media(quvi_media_t media)
     spew("  ]\n}\n");
 }
 
+static void dump_category_help()
+{
+  fprintf(stderr,
+          "Usage:\n"
+          "  quvi --category <value[,value,...]>\n"
+          "Where the values may be:\n"
+          "  http, rtmp, rtsp, mms, all\n"
+          "Examples:\n"
+          "  quvi --category all       ;# program default\n"
+          "  quvi --category rtmp,mms  ;# multiple categories\n");
+  exit (0);
+}
+
+static void check_category(const char *s, long *n)
+{
+  if (strlen(s) == 0)
+    return;
+
+  if (!strcmp(s, "all"))
+    *n = QUVIPROTO_ALL;
+  else if (!strcmp(s, "help"))
+    dump_category_help();
+  else
+    {
+      if (!strcmp(s, "http"))
+        *n |= QUVIPROTO_HTTP;
+      else if (!strcmp(s, "rtmp"))
+        *n |= QUVIPROTO_RTMP;
+      else if (!strcmp(s, "rtsp"))
+        *n |= QUVIPROTO_RTSP;
+      else if (!strcmp(s, "mms"))
+        *n |= QUVIPROTO_MMS;
+      else
+        {
+          fprintf(stderr, "warning: --category: %s: invalid value, "
+                  "try \"help\"\n", s);
+        }
+    }
+}
+
+static long parse_categories(char *s)
+{
+  char b[4], *p=s;
+  long i, n=0;
+
+  while (*p)
+    {
+      memset(&b, 0, sizeof(b));
+      for (i=0; i<sizeof(b) && *p; ++i, ++p)
+        {
+          if (*p == ',')
+            {
+              ++p;
+              break;
+            }
+          b[i] = *p;
+        }
+      b[i] = '\0';
+      check_category(b, &n);
+    }
+
+  return (n);
+}
+
+static void depr_category(const char *o)
+{
+  fprintf(stderr, "warning: %s: deprecated, use --category instead\n", o);
+}
+
 static quvi_t init_quvi()
 {
+  QUVIcategory category;
   QUVIcode rc;
   quvi_t quvi;
 
@@ -587,22 +657,44 @@ static quvi_t init_quvi()
   quvi_setopt(quvi, QUVIOPT_NORESOLVE, opts->no_resolve_given);
   quvi_setopt(quvi, QUVIOPT_NOVERIFY, opts->no_verify_given);
 
-  if (opts->category_all_given)
-    quvi_setopt(quvi, QUVIOPT_CATEGORY, QUVIPROTO_ALL);
-  else
+  /* Category. */
+
+  category = 0;
+
+  if (opts->category_given)
+    category = parse_categories(opts->category_arg);
+
+  /* Category: deprecated. To be removed in later versions. */
+
+  if (opts->category_http_given)
     {
-      long n = 0;
-      if (opts->category_http_given)
-        n |= QUVIPROTO_HTTP;
-      if (opts->category_mms_given)
-        n |= QUVIPROTO_MMS;
-      if (opts->category_rtsp_given)
-        n |= QUVIPROTO_RTSP;
-      if (opts->category_rtmp_given)
-        n |= QUVIPROTO_RTMP;
-      if (n > 0)
-        quvi_setopt(quvi, QUVIOPT_CATEGORY, n);
+      depr_category("--category-http");
+      category |= QUVIPROTO_HTTP;
     }
+  if (opts->category_rtmp_given)
+    {
+      depr_category("--category-rtmp");
+      category |= QUVIPROTO_RTMP;
+    }
+  if (opts->category_rtsp_given)
+    {
+      depr_category("--category-rtsp");
+      category |= QUVIPROTO_RTSP;
+    }
+  if (opts->category_mms_given)
+    {
+      depr_category("--category-mms");
+      category |= QUVIPROTO_MMS;
+    }
+  if (opts->category_all_given)
+    depr_category("--category-all");
+
+  if (category == 0)
+    category = QUVIPROTO_ALL;
+
+  quvi_setopt(quvi, QUVIOPT_CATEGORY, category);
+
+  /* Status callback */
 
   quvi_setopt(quvi, QUVIOPT_STATUSFUNCTION, status_callback);
 
