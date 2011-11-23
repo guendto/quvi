@@ -21,12 +21,12 @@
 
 #include "config.h"
 
-#include <stdio.h>
+#include <assert.h>
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
+#include <stdio.h>
 #include <errno.h>
-#include <assert.h>
 
 #include <quvi/quvi.h>
 #include <quvi/llst.h>
@@ -38,6 +38,8 @@
 
 #define _free(p) \
     do { if (p) { free(p); p=0; } } while (0)
+
+static const char *config_fname = ".quvirc";
 
 /* strepl.c */
 extern char *strepl(const char *s, const char *what, const char *with);
@@ -781,11 +783,13 @@ static void read_file(const char *path)
 {
   FILE *f = fopen(path, "rt");
   if (f == NULL)
+    {
 #ifdef HAVE_STRERROR
-    spew_e("error: %s: %s\n", path, strerror(errno));
+      spew_e("error: %s: %s\n", path, strerror(errno));
 #else
-    perror("fopen");
+      perror("fopen");
 #endif
+    }
   else
     {
       read_from(f);
@@ -812,14 +816,92 @@ static unsigned int read_input()
   return ((unsigned int)quvi_llst_size(input));
 }
 
+static int config_exists(const char *fpath)
+{
+  FILE *f = fopen(fpath, "r");
+  int have_config = 0;
+  if (f != NULL)
+    {
+      have_config = 1;
+      fclose(f);
+      f = NULL;
+    }
+  return (have_config);
+}
+
+static int parse_config(int argc, char **argv, char *home)
+{
+  struct cmdline_parser_params *pp = NULL;
+  int have_config = 0;
+  char *fpath = NULL;
+
+  asprintf(&fpath, "%s/%s", home, config_fname);
+  if (fpath == NULL)
+    exit (QUVI_MEM);
+
+  have_config = config_exists(fpath);
+  if (have_config == 0)
+    {
+      _free(fpath);
+      return (have_config);
+    }
+
+  pp = cmdline_parser_params_create();
+  pp->check_required = 0;
+
+  have_config = (int)(cmdline_parser_config_file(fpath, opts, pp) == 0);
+  if (have_config == 1)
+    {
+      _free(fpath); /* cmdline_parser_ext may exit early. */
+
+      /* Config parsed at this point. Next, apply the cmdline options
+       * and allow overriding the values defined in the config.
+       *
+       * This step resets the $opt_given flags, e.g. if the config
+       * contains the "proxy", the parser sets proxy_given to 1,
+       * --proxy is used to override the config value, the flag
+       * is reset to 0. */
+      pp->check_required = 1;
+      pp->initialize = 0;
+      pp->override = 1;
+      have_config = (int)(cmdline_parser_ext(argc, argv, opts, pp) == 0);
+    }
+
+  _free(fpath);
+  _free(pp);
+
+  return (have_config);
+}
+
+static void parse_cmdline(int argc, char **argv)
+{
+  int have_config = 0;
+  char *home = NULL;
+
+  opts = calloc(1, sizeof(struct gengetopt_args_info));
+  if (opts == NULL)
+    exit (QUVI_MEM);
+
+  home = getenv("QUVI_HOME");
+  if (home == NULL)
+    home = getenv("HOME");
+
+  if (home != NULL && getenv("QUVI_NO_CONFIG") == NULL)
+    have_config = parse_config(argc, argv, home);
+
+  if (have_config == 0)
+    {
+      if (cmdline_parser(argc, argv, opts) != 0)
+        exit (QUVI_INVARG);
+    }
+}
+
 int main(int argc, char *argv[])
 {
-  const char *home, *no_config, *fname;
-  QUVIcode rc, last_failure;
+  QUVIcode rc, last_error;
   unsigned int input_num;
   quvi_llst_node_t curr;
   quvi_media_t media;
-  int no_config_flag;
   int i, errors;
 
   assert(quvi == NULL);
@@ -827,64 +909,8 @@ int main(int argc, char *argv[])
   assert(opts == NULL);
   assert(input == NULL);
 
-  no_config = getenv("QUVI_NO_CONFIG");
-  no_config_flag = 1;
-
-  home = getenv("QUVI_HOME");
-  if (!home)
-    home = getenv("HOME");
-
-#ifndef HOST_W32
-  fname = "/.quvirc";
-#else
-  fname = "\\quvirc";
-#endif
-
   atexit(cleanup);
-
-  opts = calloc(1, sizeof(struct gengetopt_args_info));
-  if (!opts)
-    return(QUVI_MEM);
-
-  /* Init cmdline parser. */
-
-  if (home != NULL && no_config == 0)
-    {
-      char *path;
-      FILE *f;
-
-      asprintf(&path, "%s%s", home, fname);
-      f = fopen(path, "r");
-
-      if (f != NULL)
-        {
-          struct cmdline_parser_params *pp;
-
-          fclose(f);
-          f = NULL;
-
-          pp = cmdline_parser_params_create();
-          pp->check_required = 0;
-
-          if (cmdline_parser_config_file(path, opts, pp) == 0)
-            {
-              pp->initialize = 0;
-              pp->override = 1;
-              pp->check_required = 1;
-
-              if (cmdline_parser_ext(argc, argv, opts, pp) == 0)
-                no_config_flag = 0;
-            }
-          _free(pp);
-        }
-      _free(path);
-    }
-
-  if (no_config_flag == 1)
-    {
-      if (cmdline_parser(argc, argv, opts) != 0)
-        return (QUVI_INVARG);
-    }
+  parse_cmdline(argc, argv);
 
   if (opts->version_given == 1)
     print_version();
@@ -911,7 +937,7 @@ int main(int argc, char *argv[])
       return (QUVI_INVARG);
     }
 
-  last_failure = QUVI_OK;
+  last_error = QUVI_OK;
   errors = 0;
 
   for (i=0, curr=input; curr; ++i)
@@ -932,7 +958,7 @@ int main(int argc, char *argv[])
       else
         {
           dump_error(quvi, rc);
-          last_failure = rc;
+          last_error = rc;
           ++errors;
         }
       quvi_parse_close(&media);
@@ -943,7 +969,7 @@ int main(int argc, char *argv[])
   if (input_num >1)
     {
       spew_qe("Results: %d OK, %d failed (last 0x%02x), exit with 0x%02x\n",
-              input_num - errors, errors, last_failure, rc);
+              input_num - errors, errors, last_error, rc);
     }
 
   return (rc);
