@@ -81,9 +81,39 @@ static void spew(const char *fmt, ...)
   va_end(ap);
 }
 
+static void dump_error_json(quvi_t quvi, QUVIcode rc)
+{
+  fprintf(stderr,
+          "{\n"
+          "  \"error\": [\n"
+          "    {\n"
+          "      \"message\": \"%s\"\n"
+          "    }\n"
+          "  ]\n"
+          "}\n", quvi_strerror(quvi, rc));
+}
+
+static void dump_error_xml(quvi_t quvi, QUVIcode rc)
+{
+  fprintf(stderr,
+          "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+          "<error>\n"
+          "  <message>%s</message>\n"
+          "</error>\n",
+          quvi_strerror(quvi, rc));
+}
+
 static void dump_error(quvi_t quvi, QUVIcode rc)
 {
-  fprintf(stderr, "error: %s\n", quvi_strerror(quvi, rc));
+  if (opts->export_errors_given)
+    {
+      if (opts->xml_given)
+        dump_error_xml(quvi, rc);
+      else
+        dump_error_json(quvi, rc);
+    }
+  else
+    fprintf(stderr, "error: %s\n", quvi_strerror(quvi, rc));
 }
 
 static void handle_resolve_status(quvi_word type)
