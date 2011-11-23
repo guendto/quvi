@@ -896,7 +896,7 @@ static void parse_cmdline(int argc, char **argv)
     }
 }
 
-int main(int argc, char *argv[])
+static int process_queue()
 {
   QUVIcode rc, last_error;
   unsigned int input_num;
@@ -904,41 +904,15 @@ int main(int argc, char *argv[])
   quvi_media_t media;
   int i, errors;
 
-  assert(quvi == NULL);
-  assert(curl == NULL);
-  assert(opts == NULL);
-  assert(input == NULL);
-
-  atexit(cleanup);
-  parse_cmdline(argc, argv);
-
-  if (opts->version_given == 1)
-    print_version();
-
-  if (opts->license_given == 1)
-    license();
-
-  verbose_flag = (int)(opts->quiet_given == 0);
-  init_quvi();
-
-  if (opts->query_formats_given == 1)
-    query_formats(quvi);
-
-  if (opts->support_given == 1)
-    support(quvi);
-
-  /* User input */
-
   input_num = read_input();
+  last_error = QUVI_OK;
+  errors = 0;
 
   if (input_num == 0)
     {
       spew_qe("error: no input URLs\n");
       return (QUVI_INVARG);
     }
-
-  last_error = QUVI_OK;
-  errors = 0;
 
   for (i=0, curr=input; curr; ++i)
     {
@@ -971,8 +945,35 @@ int main(int argc, char *argv[])
       spew_qe("Results: %d OK, %d failed (last 0x%02x), exit with 0x%02x\n",
               input_num - errors, errors, last_error, rc);
     }
-
   return (rc);
+}
+
+int main(int argc, char *argv[])
+{
+  assert(quvi == NULL);
+  assert(curl == NULL);
+  assert(opts == NULL);
+  assert(input == NULL);
+
+  atexit(cleanup);
+  parse_cmdline(argc, argv);
+
+  if (opts->version_given == 1)
+    print_version();
+
+  if (opts->license_given == 1)
+    license();
+
+  verbose_flag = (int)(opts->quiet_given == 0);
+  init_quvi();
+
+  if (opts->query_formats_given == 1)
+    query_formats(quvi);
+
+  if (opts->support_given == 1)
+    support(quvi);
+
+  return (process_queue());
 }
 
 /* vim: set ts=2 sw=2 tw=72 expandtab: */
