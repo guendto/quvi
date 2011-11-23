@@ -40,9 +40,14 @@ Print supported hosts and exit. If an I<arg> is specified, the program
 checks, instead, whether the I<arg> is supported. For checking which
 formats are available to an URL, use C<--query-formats> instead.
 
+=item B<--export-errors>
+
+Print errors (to stderr) in the corresponding data interchange format.
+The default is JSON. See also C<--xml>.
+
 =item B<--xml>
 
-Print the media details in XML.
+Print the media details (and errors) in XML.
 
 =item B<-q, --quiet>
 
