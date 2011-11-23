@@ -80,25 +80,41 @@ Do not verify media stream URL after parsing. The verification is
 specific to HTTP and ignored with other protocols. If enabled, some
 of the media details, e.g. content length, will be incomplete.
 
-=item B<--category-http>
+=item B<-c, --category> I<arg> (=all)
+
+Enable category I<arg> webscripts. I<arg> may a list of the categories
+to enable, each category separated by a comma (','). I<arg> can also
+be C<help>. All of the categories are enabled by default.
+
+=item B<--category-http> (depr.)
 
 Enable category HTTP webscripts. This is the default category.
+This option is deprecated and will be removed in later versions
+of quvi. Use C<--category> instead.
 
-=item B<--category-mms>
+=item B<--category-mms> (depr.)
 
 Enable category MMS webscripts.
+This option is deprecated and will be removed in later versions
+of quvi. Use C<--category> instead.
 
-=item B<--category-rtsp>
+=item B<--category-rtsp> (depr.)
 
 Enable category RTSP webscripts.
+This option is deprecated and will be removed in later versions
+of quvi. Use C<--category> instead.
 
-=item B<--category-rtmp>
+=item B<--category-rtmp> (depr.)
 
 Enable category RTMP webscripts.
+This option is deprecated and will be removed in later versions
+of quvi. Use C<--category> instead.
 
-=item B<--category-all>
+=item B<--category-all> (depr.)
 
 Enable all categories of webscripts.
+This option is deprecated and will be removed in later versions
+of quvi. Use C<--category> instead.
 
 =item B<-F, --query-formats>
 
@@ -161,7 +177,7 @@ strings from this list with C<--format>.
 
 Print supported website in the HTTP category and exit.
 
-=item quvi --support --category-rtmp
+=item quvi --support -c rtmp
 
 Same but print only those from the RTMP category.
 
