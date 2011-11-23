@@ -580,24 +580,24 @@ static void dump_category_help()
   exit (0);
 }
 
-static void check_category(const char *s, long *n)
+static void check_category(const char *s, QUVIcategory *n)
 {
   if (strlen(s) == 0)
     return;
 
-  if (!strcmp(s, "all"))
+  if (strcmp(s, "all") == 0)
     *n = QUVIPROTO_ALL;
-  else if (!strcmp(s, "help"))
+  else if (strcmp(s, "help") == 0)
     dump_category_help();
   else
     {
-      if (!strcmp(s, "http"))
+      if (strcmp(s, "http") == 0)
         *n |= QUVIPROTO_HTTP;
-      else if (!strcmp(s, "rtmp"))
+      else if (strcmp(s, "rtmp") == 0)
         *n |= QUVIPROTO_RTMP;
-      else if (!strcmp(s, "rtsp"))
+      else if (strcmp(s, "rtsp") == 0)
         *n |= QUVIPROTO_RTSP;
-      else if (!strcmp(s, "mms"))
+      else if (strcmp(s, "mms") == 0)
         *n |= QUVIPROTO_MMS;
       else
         {
@@ -607,15 +607,15 @@ static void check_category(const char *s, long *n)
     }
 }
 
-static long parse_categories(char *s)
+static QUVIcategory parse_categories(char *s)
 {
+  QUVIcategory n=0;
   char b[4], *p=s;
-  long i, n=0;
+  size_t i;
 
-  while (*p)
+  while (*p != '\0')
     {
-      memset(&b, 0, sizeof(b));
-      for (i=0; i<sizeof(b) && *p; ++i, ++p)
+      for (i=0; i<sizeof(b) && *p!='\0'; ++i,++p)
         {
           if (*p == ',')
             {
