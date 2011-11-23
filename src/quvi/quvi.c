@@ -53,7 +53,7 @@ typedef struct gengetopt_args_info *opts_t;
 static opts_t opts = NULL;
 
 /*@null@*/
-static quvi_llst_node_t inputs = NULL;
+static quvi_llst_node_t input = NULL;
 
 /* prints to std(e)rr. */
 static void spew_e(const char *fmt, ...)
@@ -277,7 +277,7 @@ static void query_formats(quvi_t quvi)
   unsigned int i;
   QUVIcode rc;
 
-  if (opts->inputs_num < 1)
+  if (opts->inputs_num <1)
     {
       spew_qe("error: no input URLs\n");
       exit (QUVI_INVARG);
@@ -610,10 +610,10 @@ static void check_category(const char *s, QUVIcategory *n)
     }
 }
 
-static QUVIcategory parse_categories(char *s)
+static QUVIcategory parse_categories()
 {
+  char b[4], *p=opts->category_arg;
   QUVIcategory n=0;
-  char b[4], *p=s;
   size_t i;
 
   while (*p != '\0')
@@ -653,9 +653,7 @@ static void init_quvi()
 
   /* Set quvi options. */
 
-  if (opts->format_given == 1)
-    quvi_setopt(quvi, QUVIOPT_FORMAT, opts->format_arg);
-
+  quvi_setopt(quvi, QUVIOPT_FORMAT, opts->format_arg);
   quvi_setopt(quvi, QUVIOPT_NORESOLVE, opts->no_resolve_given);
   quvi_setopt(quvi, QUVIOPT_NOVERIFY, opts->no_verify_given);
 
@@ -663,8 +661,8 @@ static void init_quvi()
 
   category = 0;
 
-  if (opts->category_given == 1)
-    category = parse_categories(opts->category_arg);
+  if (opts->category_arg != NULL)
+    category = parse_categories();
 
   /* Category: deprecated. To be removed in later versions. */
 
@@ -705,11 +703,8 @@ static void init_quvi()
   quvi_getinfo(quvi, QUVIINFO_CURL, &curl);
   assert(curl != NULL);
 
-  if (opts->agent_given == 1)
-    curl_easy_setopt(curl, CURLOPT_USERAGENT, opts->agent_arg);
-
-  if (opts->proxy_given == 1)
-    curl_easy_setopt(curl, CURLOPT_PROXY, opts->proxy_arg);
+  curl_easy_setopt(curl, CURLOPT_USERAGENT, opts->agent_arg);
+  curl_easy_setopt(curl, CURLOPT_PROXY, opts->proxy_arg);
 
   if (opts->no_proxy_given == 1)
     curl_easy_setopt(curl, CURLOPT_PROXY, "");
@@ -720,19 +715,20 @@ static void init_quvi()
 
 static void cleanup()
 {
-  if (inputs)
-    quvi_llst_free(&inputs);
-  assert(inputs == NULL);
+  if (input)
+    quvi_llst_free(&input);
 
   if (quvi)
     quvi_close(&quvi);
-  assert(quvi == NULL);
 
   if (opts)
     {
       cmdline_parser_free(opts);
       _free(opts);
     }
+
+  assert(input == NULL);
+  assert(quvi == NULL);
   assert(opts == NULL);
 }
 
@@ -745,14 +741,14 @@ static void read_from(FILE *f)
 
   while (fgets(b, (int)sizeof(b), f))
     {
-      if (strlen(b) > 16)
+      if (strlen(b) >16)
         {
           const size_t n = strlen(b)-1;
 
           if (b[n] == '\n')
             b[n] = '\0';
 
-          quvi_llst_append(&inputs, strdup(b));
+          quvi_llst_append(&input, strdup(b));
         }
     }
 }
@@ -810,17 +806,17 @@ static unsigned int read_input()
           if (is_url(opts->inputs[i]) == 0)
             read_file(opts->inputs[i]);
           else /* Must be an URL. */
-            quvi_llst_append(&inputs, strdup(opts->inputs[i]));
+            quvi_llst_append(&input, strdup(opts->inputs[i]));
         }
     }
-  return ((unsigned int)quvi_llst_size(inputs));
+  return ((unsigned int)quvi_llst_size(input));
 }
 
 int main(int argc, char *argv[])
 {
   const char *home, *no_config, *fname;
   QUVIcode rc, last_failure;
-  unsigned int inputs_num;
+  unsigned int input_num;
   quvi_llst_node_t curr;
   quvi_media_t media;
   int no_config_flag;
@@ -829,7 +825,7 @@ int main(int argc, char *argv[])
   assert(quvi == NULL);
   assert(curl == NULL);
   assert(opts == NULL);
-  assert(inputs == NULL);
+  assert(input == NULL);
 
   no_config = getenv("QUVI_NO_CONFIG");
   no_config_flag = 1;
@@ -891,10 +887,10 @@ int main(int argc, char *argv[])
     }
 
   if (opts->version_given == 1)
-    print_version(opts);
+    print_version();
 
   if (opts->license_given == 1)
-    license(opts);
+    license();
 
   verbose_flag = (int)(opts->quiet_given == 0);
   init_quvi();
@@ -907,9 +903,9 @@ int main(int argc, char *argv[])
 
   /* User input */
 
-  inputs_num = read_input();
+  input_num = read_input();
 
-  if (inputs_num == 0)
+  if (input_num == 0)
     {
       spew_qe("error: no input URLs\n");
       return (QUVI_INVARG);
@@ -918,7 +914,7 @@ int main(int argc, char *argv[])
   last_failure = QUVI_OK;
   errors = 0;
 
-  for (i=0, curr=inputs; curr; ++i)
+  for (i=0, curr=input; curr; ++i)
     {
       char *url = quvi_llst_data(curr);
       rc = quvi_parse(quvi, url, &media);
@@ -927,18 +923,15 @@ int main(int argc, char *argv[])
           assert(media != NULL);
           dump_media(media);
 
-          if (opts->exec_given == 1)
+          if (opts->exec_arg != NULL)
             {
-              do
-                {
-                  invoke_exec(media);
-                }
+              do invoke_exec(media);
               while (quvi_next_media_url(media) == QUVI_OK);
             }
         }
       else
         {
-          dump_error(quvi,rc);
+          dump_error(quvi, rc);
           last_failure = rc;
           ++errors;
         }
@@ -947,10 +940,10 @@ int main(int argc, char *argv[])
       curr = quvi_llst_next(curr);
     }
 
-  if (inputs_num > 1)
+  if (input_num >1)
     {
       spew_qe("Results: %d OK, %d failed (last 0x%02x), exit with 0x%02x\n",
-              inputs_num - errors, errors, last_failure, rc);
+              input_num - errors, errors, last_failure, rc);
     }
 
   return (rc);
