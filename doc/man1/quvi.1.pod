@@ -4,7 +4,7 @@ quvi - query media tool
 
 =head1 SYNOPSIS
 
-quvi [options] E<lt>url | file ...E<gt>
+quvi [options] [url ...] [file ...]
 
 =head1 DESCRIPTION
 
@@ -13,186 +13,222 @@ It supports many websites including YouTube and Dailymotion.
 
 =head1 OPTIONS
 
-=head2 Notes
-
 quvi reads standard input by default. It can also read the URLs from
 files but expects each URL to be separated by a newline character.
 
-=head2 Options
-
-=over 4
-
-=item B<-h, --help>
+=head2 -h, --help
 
 Print help and exit.
 
-=item B<--version>
+=head2 --version
 
 Print program version and exit.
 
-=item B<--license>
+=head2 --license
 
 Print license and exit.
 
-=item B<--support> [I<arg>]
+=head2 --config
 
-Print supported hosts and exit. If an I<arg> is specified, the program
-checks, instead, whether the I<arg> is supported. For checking which
-formats are available to an URL, use C<--query-formats> instead.
+Print path to the config file and exit.
 
-=item B<--export-errors>
+=head2 --support [I<arg>]
+
+Print supported hosts and exit. If I<arg> is present, the program
+checks whether the I<arg> is supported.
+
+The default behaviour, without I<arg>, causes quvi to print the
+supported websites. The B<first> string is the domain string which
+is, in fact, a (Lua) pattern used to match the URL to a libquvi
+script. The B<second> string is, I<now obsolete> (see below), an
+array containing the supported formats specific to the host.
+
+Use C<--query-formats> if you need to check an URL for the available
+formats.
+
+=head2 --export-errors
 
 Print errors (to stderr) in the corresponding data interchange format.
 The default is JSON. See also C<--xml>.
 
-=item B<--xml>
+=head2 --xml
 
-Print the media details (and errors) in XML.
+Print the media details (and errors, if C<--export-errors> is specified)
+in XML.
 
-=item B<-q, --quiet>
+=head2 -q, --quiet
 
-Turn off all output printed to stderr (excl. any errors). If
-C<--verbose-libcurl> is enabled, libcurl will continue to print messages to
-stderr. The media details will still be printed to stdout.
+Turn off all output printed to stderr (excl. any errors).
+If C<--verbose-libcurl> is specified, libcurl will continue
+to print messages to stderr. The media details will still
+be printed to stdout.
 
-=item B<--verbose-libcurl>
+=head2 --verbose-libcurl
 
 Turn on libcurl verbose mode.
 
-=item B<--exec> I<arg>
+=head2 --exec I<arg>
 
-Invoke I<arg> after each successfully parsed URL. Each occurence of the
-following specifiers will be replaced (and quoted with double quatation
-marks) within the I<arg>:
+Invoke I<arg> after each successfully parsed URL. The following
+specifiers are supported:
 
- %t  Page title
- %u  Media URL
+ %t  ..  Media title
+ %u  ..  Media URL
 
-=item B<-r, --no-resolve>
+Note that I<each> occurence of the specifier will be replaced within
+the I<arg>. quvi accepts multiple occurrences of C<--exec>. See also
+L</EXAMPLES>.
 
-Do not resolve URL redirections. If enabled, breaks the compatibility
-with most "shortened" URLs. Webscripts that use redirection resolving
-explicitly, ignore this switch.
+=head2 -r, --no-resolve
 
-=item B<-n, --no-verify>
+Do not resolve HTTP redirections. When used, quvi will not be able
+to resolve most of the "shortened URLs" produced by different URL
+shortening services.
 
-Do not verify media stream URL after parsing. The verification is
-specific to HTTP and ignored with other protocols. If enabled, some
-of the media details, e.g. content length, will be incomplete.
+Note that libquvi scripts that explicitly (need to) resolve
+redirections will continue to do so even if this switch is used.
 
-=item B<-c, --category> I<arg> (=all)
+=head2 -n, --no-verify
+
+Do not verify media stream URL after parsing. When used, some
+media details, e.g. content length, will not become available.
+
+Note that libquvi skips the verification automatically with all
+non-HTTP media stream URLs.
+
+=head2 -c, --category I<arg> (=all)
 
 Enable category I<arg> webscripts. I<arg> may a list of the categories
 to enable, each category separated by a comma (','). I<arg> can also
 be C<help>. All of the categories are enabled by default.
 
-=item B<--category-http> (depr.)
+=head2 -F, --query-formats
 
-Enable category HTTP webscripts. This is the default category.
-This option is deprecated and will be removed in later versions
-of quvi. Use C<--category> instead.
+Query available formats to an URL. The returned array contains a
+dynamically (queried from the server) created list of the available
+formats to the URL.
 
-=item B<--category-mms> (depr.)
+You can use these I<format strings> with C<--format>.
 
-Enable category MMS webscripts.
-This option is deprecated and will be removed in later versions
-of quvi. Use C<--category> instead.
+How the format strings in the array are created is website specific
+and determined by the I<libquvi script> responsible of parsing the
+media details for the URL.
 
-=item B<--category-rtsp> (depr.)
+See also C<--format>.
 
-Enable category RTSP webscripts.
-This option is deprecated and will be removed in later versions
-of quvi. Use C<--category> instead.
+=head2 -f, --format I<arg> (=default)
 
-=item B<--category-rtmp> (depr.)
+Query format I<arg> of the media. The I<arg> can also be C<default>
+or C<best>. The I<arg> value is used with B<all> of the URLs fed to
+quvi at runtime.
 
-Enable category RTMP webscripts.
-This option is deprecated and will be removed in later versions
-of quvi. Use C<--category> instead.
+If the I<arg> is C<best>, the I<libquvi script> responsible of parsing
+the media details will determine the C<best> format available to an URL.
 
-=item B<--category-all> (depr.)
+If the I<arg> is C<default> the I<libquvi script> attempts to return an
+URL to whatever was deemed to be the C<default> format to the URL.
 
-Enable all categories of webscripts.
-This option is deprecated and will be removed in later versions
-of quvi. Use C<--category> instead.
+The I<libquvi script> will switch to the C<default> format if the I<arg>
+was unrecognized or the requested I<arg> format was not available.
 
-=item B<-F, --query-formats>
+For the above reasons, the resulting format may be different from the
+requested I<arg> format.
 
-Query available formats to an URL.
+For details about the YouTube's "fmt" IDs, refer to:
+ http://en.wikipedia.org/wiki/YouTube#Quality_and_codecs
 
-=item B<-f, --format> I<arg> (=default)
-
-Get format I<arg> of the media. The resulting format may be different
-from the I<arg> if the library was unable to get the requested format.
 See also C<--query-formats>.
 
-=item B<--agent> I<arg> (=Mozilla/5.0)
+=head2 --agent I<arg> (=Mozilla/5.0)
 
 Identify quvi as I<arg> to the HTTP servers. Default is "Mozilla/5.0".
 
-=item B<--proxy> I<arg>
+=head2 --proxy I<arg>
 
-Use proxy for HTTP connections, e.g. "http://foo:1234".
-You can also define http_proxy environment setting to
-achieve the same.
+Use proxy for HTTP connections, e.g. "http://foo:1234". You can also
+define B<http_proxy> environment setting to for the same effect.
 
-=item B<--no-proxy>
+=head2 --no-proxy
 
 Disable use of HTTP proxy completely. Proxy will not be used even
-if it is defined in http_proxy.
+if it is defined in B<http_proxy>.
 
-=item B<--connect-timeout> I<seconds>
+=head2 --connect-timeout I<seconds>
 
-Maximum seconds allowed connection to server take.
-Default is 30.
+Maximum seconds allowed connection to server take. Default is 30.
 
-=back
+=head1 DEPRECATED
+
+The following options have been marked as "deprecated" and will be
+removed in the later versions of quvi.
+
+=head2 --category-http
+
+Enable category HTTP webscripts. This is the default category.
+Use C<--category> instead.
+
+=head2 --category-mms
+
+Enable category MMS webscripts. Use C<--category> instead.
+
+=head2 --category-rtsp
+
+Enable category RTSP webscripts. Use C<--category> instead.
+
+=head2 --category-rtmp
+
+Enable category RTMP webscripts. Use C<--category> instead.
+
+=head2 --category-all
+
+Enable all categories of webscripts. Use C<--category> instead.
 
 =head1 EXAMPLES
 
-Put the URLs inside quotes when they are specified as the command line
-arguments to the program. This is the recommended practice.
+Always quote the URLs in the command line as seen below. Many URLs
+contain parameters that may otherwise cause the shell to behave
+with unexpected results.
 
-=over 4
-
-=item quvi "URL"
+=head2 quvi "URL"
 
 Typical use.
 
-=item quvi --xml "URL"
+=head2 quvi --xml "URL"
 
 Same but print the results in XML.
 
-=item quvi -f best "URL"
+=head2 quvi -f best "URL"
 
 Get for the best available format of the media. This assumes E<gt>1
 formats are supported, otherwise will fallback to default format.
 
-=item quvi -F "URL"
+=head2 quvi -F "URL"
 
 Query available formats to the URL. Use one of the returned format
 strings from this list with C<--format>.
 
-=item quvi --support
+=head2 quvi --support
 
-Print supported website in the HTTP category and exit.
+Print the supported websites. The domain strings are patterns.
 
-=item quvi --support -c rtmp
+=head2 quvi --support -c rtmp
 
 Same but print only those from the RTMP category.
 
-=item quvi --support "URL"
+=head2 quvi --support "URL"
 
 Check whether the URL is supported. This does not require an Internet
 connection but will fail with most "shortened" URLs.
 
-=back
+=head2 quvi -qrn "URL" --exec "echo %t" --exec "vlc %u"
+
+Be quiet (-q), do not resolve HTTP redirections (-r) and skip media
+stream URL verification (-n). Print media title using echo(1), open
+media stream URL in vlc(1).
 
 =head1 FILES
 
-=over 4
-
-=item B<$HOME/.quvirc>
+=head2 $HOME/.quvirc
 
 Most of the command line options can also be defined in the
 configuration file. For example:
@@ -204,26 +240,18 @@ configuration file. For example:
 
 You can also use $QUVI_HOME instead of $HOME.
 
-=back
-
 =head1 ENVIRONMENT
 
 =head2 quvi
 
-=over 4
-
-=item B<QUVI_HOME>
+=head3 QUVI_HOME
 
 Path to the directory with the configuration file. If set, quvi
 command uses this instead of $HOME.
 
-=back
-
 =head2 libquvi
 
-=over 4
-
-=item B<LIBQUVI_SCRIPTSDIR>
+=head3 LIBQUVI_SCRIPTSDIR
 
 Path to the libquvi-scripts directory. Overrides the libquvi default
 search paths for the scripts, e.g.:
@@ -234,23 +262,20 @@ Make sure it points to a directory containing the lua/ directory with the
 expected "util/*.lua" and "website/quvi/*.lua" scripts that are normally
 installed with libquvi-scripts.
 
-Refer to the libquvi API documentation at
+For a totorial that covers these steps, see the libquvi C API
+documentation at:
 
   <http://quvi.sourceforge.net/doc/>
 
-for a tutorial that covers these steps.
-
-=item B<LIBQUVI_SHOW_SCANDIR>
+=head3 LIBQUVI_SHOW_SCANDIR
 
 If set, libquvi prints the lua script search paths to the stderr.
 
-=item B<LIBQUVI_SHOW_SCRIPT>
+=head3 LIBQUVI_SHOW_SCRIPT
 
 If set, the lua scripts found by libquvi are printed to the stderr.
 
  env LIBQUVI_SHOW_SCRIPT=1 quvi
-
-=back
 
 =head1 EXIT STATUS
 
@@ -284,7 +309,7 @@ quvi is free software, licensed under the LGPLv2.1+.
 
 =head1 SEE ALSO
 
-C<libquvi(3)>, C<libquvi-scripts(7)>
+libquvi(3), libquvi-scripts(7)
 
 =head1 AUTHOR
 
