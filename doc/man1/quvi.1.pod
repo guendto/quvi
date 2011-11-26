@@ -28,10 +28,6 @@ Print program version and exit.
 
 Print license and exit.
 
-=head2 --config
-
-Print path to the config file and exit.
-
 =head2 --support [I<arg>]
 
 Print supported hosts and exit. If I<arg> is present, the program
@@ -104,38 +100,32 @@ be C<help>. All of the categories are enabled by default.
 
 =head2 -F, --query-formats
 
-Query available formats to an URL. The returned array contains a
-dynamically (queried from the server) created list of the available
-formats to the URL.
+Query available formats to the URL. The returned array is created
+from the data returned by the server. You can use the
+I<format strings> in this array with C<--format>.
 
-You can use these I<format strings> with C<--format>.
-
-How the format strings in the array are created is website specific
-and determined by the I<libquvi script> responsible of parsing the
-media details for the URL.
+The available formats are determined by the I<libquvi script>
+responsible for parsing the media details.
 
 See also C<--format>.
 
 =head2 -f, --format I<arg> (=default)
 
-Query format I<arg> of the media. The I<arg> can also be C<default>
-or C<best>. The I<arg> value is used with B<all> of the URLs fed to
-quvi at runtime.
+Query media details for the format I<arg>. The I<arg> may also be
+C<default> or C<best>. The I<arg> value is used with B<all> of the
+URLs fed to quvi.
 
-If the I<arg> is C<best>, the I<libquvi script> responsible of parsing
+If the I<arg> is C<best>, the I<libquvi script> responsible for parsing
 the media details will determine the C<best> format available to an URL.
 
 If the I<arg> is C<default> the I<libquvi script> attempts to return an
-URL to whatever was deemed to be the C<default> format to the URL.
+URL to whatever it deemed to be the C<default> format for the URL.
 
-The I<libquvi script> will switch to the C<default> format if the I<arg>
-was unrecognized or the requested I<arg> format was not available.
+The I<libquvi script> will return the C<default> format if the I<arg>
+was unrecognized or the requested format was not available.
 
-For the above reasons, the resulting format may be different from the
-requested I<arg> format.
-
-For details about the YouTube's "fmt" IDs, refer to:
- http://en.wikipedia.org/wiki/YouTube#Quality_and_codecs
+You can find more information about the YouTube specific "fmt" IDs at:
+ <http://en.wikipedia.org/wiki/YouTube#Quality_and_codecs>
 
 See also C<--query-formats>.
 
