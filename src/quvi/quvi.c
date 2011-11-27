@@ -110,15 +110,20 @@ static void dump_error_xml(quvi_t quvi, QUVIcode rc)
 
 static void dump_error(quvi_t quvi, QUVIcode rc)
 {
-  if (opts->export_errors_given == 1)
+  switch (opts->export_level_arg)
     {
+    case export_level_arg_media:
+    case export_level__NULL:
+    default:
+      fprintf(stderr, "error: %s\n", quvi_strerror(quvi, rc));
+      break;
+    case export_level_arg_PLUS_errors:
       if (opts->xml_given == 1)
         dump_error_xml(quvi, rc);
       else
         dump_error_json(quvi, rc);
+      break;
     }
-  else
-    fprintf(stderr, "error: %s\n", quvi_strerror(quvi, rc));
 }
 
 static void handle_resolve_status(quvi_word type)

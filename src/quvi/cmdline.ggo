@@ -11,9 +11,10 @@ option "support"
     - "Print supported websites and exit"
     optional
 
-option "export-errors"
-    - "Print errors in data interchange format"
-    optional
+option "export-level"    l  "Level of exported data"                optional
+                                enum    typestr="value"  default="media"
+                                values="media","+errors"
+
 option "xml"
     - "Print details in XML"
     optional
