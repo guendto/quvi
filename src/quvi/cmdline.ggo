@@ -31,12 +31,10 @@ option "exec"
     string typestr="arg"
     optional
 
-option "no-resolve"
-    r "Do not resolve redirections"
-    optional
-option "no-verify"
-    n "Do not verify media URL"
-    optional
+option "feature"         e  "Enable (or disable) feature"   optional
+                                enum    typestr="value"     multiple
+                                values="resolve","-resolve","verify","-verify",
+                                       "proxy","-proxy"
 
 option "query-formats"
     F "Query available formats to URL"
@@ -56,9 +54,6 @@ option "proxy"
     - "Use HTTP proxy arg (e.g. http://addr:port)"
     string typestr="arg"
     optional
-option "no-proxy"
-    - "Disable use of HTTP proxy"
-    optional
 option "connect-timeout"
     - "Seconds connecting allowed to take"
     int typestr="arg"
@@ -74,3 +69,6 @@ option "category-rtmp"   -  "Category RTMP website scripts" optional
 option "xml"             -  "Print details in XML"          optional
 option "quiet"           q  "Turn off output to stderr"     optional
 option "verbose-libcurl" -  "Turn on libcurl verbose mode"  optional
+option "no-resolve"      r  "Do not resolve redirections"   optional
+option "no-verify"       n  "Do not verify media URL"       optional
+option "no-proxy"        -  "Disable use of HTTP proxy"     optional

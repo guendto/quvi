@@ -653,8 +653,28 @@ static void depr_verbosity(const char *o)
   spew_qe("warning: %s: deprecated, use --verbosity instead\n", o);
 }
 
+static void depr_feat(const char *o)
+{
+  spew_e("warning: %s: deprecated, use --feature instead\n", o);
+}
+
+static int enabled(enum enum_feature on)
+{
+  const enum enum_feature off = on+1;
+  int i,r=1;
+  for (i=0; i<opts->feature_given; ++i)
+    {
+      if (opts->feature_arg[i] == on)
+        r = 1;
+      else if (opts->feature_arg[i] == on+1)
+        r = 0;
+    }
+  return (r);
+}
+
 static void init_quvi()
 {
+  int resolve, verify, proxy;
   QUVIcategory categories;
   QUVIcode rc;
 
@@ -668,8 +688,26 @@ static void init_quvi()
   /* Set quvi options. */
 
   quvi_setopt(quvi, QUVIOPT_FORMAT, opts->format_arg);
-  quvi_setopt(quvi, QUVIOPT_NORESOLVE, opts->no_resolve_given);
-  quvi_setopt(quvi, QUVIOPT_NOVERIFY, opts->no_verify_given);
+
+  resolve = enabled(feature_arg_resolve);
+  verify  = enabled(feature_arg_verify);
+
+  /* Deprecated. */
+
+  if (opts->no_resolve_given)
+    {
+      depr_feat("--no-resolve");
+      resolve = 0;
+    }
+
+  if (opts->no_verify_given)
+    {
+      depr_feat("--no-verify");
+      verify = 0;
+    }
+
+  quvi_setopt(quvi, QUVIOPT_NORESOLVE, resolve == 0);
+  quvi_setopt(quvi, QUVIOPT_NOVERIFY, verify == 0);
 
   /* Category. */
 
@@ -723,7 +761,22 @@ static void init_quvi()
   curl_easy_setopt(curl, CURLOPT_USERAGENT, opts->agent_arg);
   curl_easy_setopt(curl, CURLOPT_PROXY, opts->proxy_arg);
 
+  proxy = enabled(feature_arg_proxy);
+
+  /* Deprecated. */
   if (opts->no_proxy_given == 1)
+    {
+      depr_feat("--no-proxy");
+      proxy = 0;
+    }
+
+#ifdef _1
+  printf("resolve=%d, verify=%d, proxy=%d\n", resolve, verify, proxy);
+#endif
+
+  /* -- */
+
+  if (proxy == 0)
     curl_easy_setopt(curl, CURLOPT_PROXY, "");
 
   if (opts->verbose_libcurl_given)
