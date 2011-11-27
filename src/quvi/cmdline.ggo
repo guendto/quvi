@@ -26,10 +26,8 @@ option "category"        c  "Level of libquvi scripts to enable"    optional
                                 values="http","mms","rtsp","rtmp","all"
                                 multiple
 
-option "exec"
-    - "Invoke arg after parsing"
-    string typestr="arg"
-    optional
+option "exec"            -  "Execute command when done parsing"       optional
+                                string  typestr="value"  multiple
 
 option "feature"         e  "Enable (or disable) feature"   optional
                                 enum    typestr="value"     multiple

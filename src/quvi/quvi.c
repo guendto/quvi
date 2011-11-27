@@ -369,7 +369,7 @@ static char * shell_escape( char *str )
   return str;
 }
 
-static void invoke_exec(quvi_media_t media)
+static void invoke_exec(quvi_media_t media, const char *exec_arg)
 {
   char *cmd, *media_url, *q_media_url;
   char *page_title, *q_page_title, *t;
@@ -387,7 +387,7 @@ static void invoke_exec(quvi_media_t media)
   asprintf(&q_media_url, "%s", t);
   _free(t);
 
-  cmd = strdup(opts->exec_arg);
+  cmd = strdup(exec_arg);
   cmd = strepl(cmd, "%t", q_page_title);
   cmd = strepl(cmd, "%u", q_media_url);
 
@@ -996,12 +996,17 @@ static int process_queue()
       rc = quvi_parse(quvi, url, &media);
       if (rc == QUVI_OK)
         {
+          int i;
+
           assert(media != NULL);
           dump_media(media);
 
-          if (opts->exec_arg != NULL)
+          for (i=0; i<opts->exec_given; ++i)
             {
-              do invoke_exec(media);
+              do
+                {
+                  invoke_exec(media, opts->exec_arg[i]);
+                }
               while (quvi_next_media_url(media) == QUVI_OK);
             }
         }
