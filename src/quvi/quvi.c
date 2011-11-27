@@ -44,7 +44,6 @@ static const char *config_fname = ".quvirc";
 /* strepl.c */
 extern char *strepl(const char *s, const char *what, const char *with);
 
-static int verbose_flag = 1;
 /*@null@*/
 static quvi_t quvi = NULL;
 /*@null@*/
@@ -57,30 +56,42 @@ static opts_t opts = NULL;
 /*@null@*/
 static quvi_llst_node_t input = NULL;
 
-/* prints to std(e)rr. */
+/* Check whether a message should be printed. */
+static int check_verbosity(int threshold)
+{
+  if (opts->verbosity_arg >= threshold)
+    return (0);
+  return (1);
+}
+
+/* Prints to std(e)rr. 'mute' disables. */
 static void spew_e(const char *fmt, ...)
 {
   va_list ap;
-  va_start(ap, fmt);
-  vfprintf(stderr, fmt, ap);
-  va_end(ap);
-}
-
-/* respects (q)uiet, prints to std(e)rr. */
-static void spew_qe(const char *fmt, ...)
-{
-  va_list ap;
-  if (verbose_flag == 0)
+  if (check_verbosity(verbosity_arg_mute) == 0)
     return;
   va_start(ap, fmt);
   vfprintf(stderr, fmt, ap);
   va_end(ap);
 }
 
-/* glorified printf. */
+/* Prints to std(e)rr. 'quiet' disables. */
+static void spew_qe(const char *fmt, ...)
+{
+  va_list ap;
+  if (check_verbosity(verbosity_arg_quiet) == 0)
+    return;
+  va_start(ap, fmt);
+  vfprintf(stderr, fmt, ap);
+  va_end(ap);
+}
+
+/* Glorified printf. 'mute' disables. */
 static void spew(const char *fmt, ...)
 {
   va_list ap;
+  if (check_verbosity(verbosity_arg_mute) == 0)
+    return;
   va_start(ap, fmt);
   vfprintf(stdout, fmt, ap);
   va_end(ap);
@@ -88,24 +99,22 @@ static void spew(const char *fmt, ...)
 
 static void dump_error_json(quvi_t quvi, QUVIcode rc)
 {
-  fprintf(stderr,
-          "{\n"
-          "  \"error\": [\n"
-          "    {\n"
-          "      \"message\": \"%s\"\n"
-          "    }\n"
-          "  ]\n"
-          "}\n", quvi_strerror(quvi, rc));
+  spew_e("{\n"
+         "  \"error\": [\n"
+         "    {\n"
+         "      \"message\": \"%s\"\n"
+         "    }\n"
+         "  ]\n"
+         "}\n", quvi_strerror(quvi, rc));
 }
 
 static void dump_error_xml(quvi_t quvi, QUVIcode rc)
 {
-  fprintf(stderr,
-          "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-          "<error>\n"
-          "  <message>%s</message>\n"
-          "</error>\n",
-          quvi_strerror(quvi, rc));
+  spew_e("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+         "<error>\n"
+         "  <message>%s</message>\n"
+         "</error>\n",
+         quvi_strerror(quvi, rc));
 }
 
 static void dump_error(quvi_t quvi, QUVIcode rc)
@@ -115,7 +124,7 @@ static void dump_error(quvi_t quvi, QUVIcode rc)
     case export_level_arg_media:
     case export_level__NULL:
     default:
-      fprintf(stderr, "error: %s\n", quvi_strerror(quvi, rc));
+      spew_e("error: %s\n", quvi_strerror(quvi, rc));
       break;
     case export_level_arg_PLUS_errors:
       switch (opts->export_format_arg)
@@ -631,13 +640,17 @@ static void check_categories(QUVIcategory *n)
 
 static void depr_category(const char *o)
 {
-  fprintf(stderr, "warning: %s: deprecated, use --category instead\n", o);
+  spew_qe("warning: %s: deprecated, use --category instead\n", o);
 }
 
 static void depr_export_format(const char *o)
 {
-  fprintf(stderr,
-          "warning: %s: deprecated, use --export-format instead\n", o);
+  spew_qe("warning: %s: deprecated, use --export-format instead\n", o);
+}
+
+static void depr_verbosity(const char *o)
+{
+  spew_qe("warning: %s: deprecated, use --verbosity instead\n", o);
 }
 
 static void init_quvi()
@@ -713,7 +726,15 @@ static void init_quvi()
   if (opts->no_proxy_given == 1)
     curl_easy_setopt(curl, CURLOPT_PROXY, "");
 
-  curl_easy_setopt(curl, CURLOPT_VERBOSE, opts->verbose_libcurl_given);
+  if (opts->verbose_libcurl_given)
+    {
+      opts->verbosity_arg = verbosity_arg_debug;
+      depr_verbosity("--verbose-libcurl");
+    }
+
+  curl_easy_setopt(curl, CURLOPT_VERBOSE,
+                   opts->verbosity_arg == verbosity_arg_debug);
+
   curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, opts->connect_timeout_arg);
 }
 
@@ -966,14 +987,20 @@ int main(int argc, char *argv[])
   if (opts->license_given == 1)
     license();
 
-  verbose_flag = (int)(opts->quiet_given == 0);
   init_quvi();
 
   /* Deprecated. */
+
   if (opts->xml_given)
     {
       opts->export_format_arg = export_format_arg_xml;
       depr_export_format("--xml");
+    }
+
+  if (opts->quiet_given == 1)
+    {
+      depr_verbosity("--quiet"); /* Must come before the next line */
+      opts->verbosity_arg = verbosity_arg_quiet;
     }
 
   if (opts->query_formats_given == 1)
