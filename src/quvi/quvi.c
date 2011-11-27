@@ -118,11 +118,17 @@ static void dump_error(quvi_t quvi, QUVIcode rc)
       fprintf(stderr, "error: %s\n", quvi_strerror(quvi, rc));
       break;
     case export_level_arg_PLUS_errors:
-      if (opts->xml_given == 1)
-        dump_error_xml(quvi, rc);
-      else
-        dump_error_json(quvi, rc);
-      break;
+      switch (opts->export_format_arg)
+        {
+        case export_format_arg_json:
+        case export_format__NULL:
+        default:
+          dump_error_json(quvi, rc);
+          break;
+        case export_format_arg_xml:
+          dump_error_xml(quvi, rc);
+          break;
+        }
     }
 }
 
@@ -628,6 +634,12 @@ static void depr_category(const char *o)
   fprintf(stderr, "warning: %s: deprecated, use --category instead\n", o);
 }
 
+static void depr_export_format(const char *o)
+{
+  fprintf(stderr,
+          "warning: %s: deprecated, use --export-format instead\n", o);
+}
+
 static void init_quvi()
 {
   QUVIcategory categories;
@@ -956,6 +968,13 @@ int main(int argc, char *argv[])
 
   verbose_flag = (int)(opts->quiet_given == 0);
   init_quvi();
+
+  /* Deprecated. */
+  if (opts->xml_given)
+    {
+      opts->export_format_arg = export_format_arg_xml;
+      depr_export_format("--xml");
+    }
 
   if (opts->query_formats_given == 1)
     query_formats(quvi);

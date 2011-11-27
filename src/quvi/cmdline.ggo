@@ -11,13 +11,13 @@ option "support"
     - "Print supported websites and exit"
     optional
 
+option "export-format"   d  "Export in data interchange format"     optional
+                                enum    typestr="value"   default="json"
+                                values="json","xml"
 option "export-level"    l  "Level of exported data"                optional
                                 enum    typestr="value"  default="media"
                                 values="media","+errors"
 
-option "xml"
-    - "Print details in XML"
-    optional
 option "quiet"
     q "Turn off output to stderr"
     optional
@@ -75,3 +75,4 @@ option "category-http"   -  "Category HTTP website scripts" optional
 option "category-mms"    -  "Category MMS website scripts"  optional
 option "category-rtsp"   -  "Category RTSP website scripts" optional
 option "category-rtmp"   -  "Category RTMP website scripts" optional
+option "xml"             -  "Print details in XML"          optional
