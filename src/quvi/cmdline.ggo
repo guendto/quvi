@@ -36,26 +36,10 @@ option "no-verify"
     n "Do not verify media URL"
     optional
 
-option "category"
-    c "Category arg website scripts"
-    string typestr="arg"
-    default="all"
-    optional
-option "category-http"
-    - "Category HTTP website scripts (depr.)"
-    optional
-option "category-mms"
-    - "Category MMS website scripts (depr.)"
-    optional
-option "category-rtsp"
-    - "Category RTSP website scripts (depr.)"
-    optional
-option "category-rtmp"
-    - "Category RTMP website scripts (depr.)"
-    optional
-option "category-all"
-    a "All website script categories (depr.)"
-    optional
+option "category"        c  "Level of libquvi scripts to enable"    optional
+                                enum    typestr="value"   default="all"
+                                values="http","mms","rtsp","rtmp","all"
+                                multiple
 
 option "query-formats"
     F "Query available formats to URL"
@@ -83,3 +67,10 @@ option "connect-timeout"
     int typestr="arg"
     default="30"
     optional
+
+section "Deprecated"
+option "category-all"    a  "All website script categories" optional
+option "category-http"   -  "Category HTTP website scripts" optional
+option "category-mms"    -  "Category MMS website scripts"  optional
+option "category-rtsp"   -  "Category RTSP website scripts" optional
+option "category-rtmp"   -  "Category RTMP website scripts" optional

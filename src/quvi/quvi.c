@@ -590,68 +590,32 @@ static void dump_media(quvi_media_t media)
     spew("  ]\n}\n");
 }
 
-static void dump_category_help()
+static void check_categories(QUVIcategory *n)
 {
-  fprintf(stderr,
-          "Usage:\n"
-          "  quvi --category <value[,value,...]>\n"
-          "Where the values may be:\n"
-          "  http, rtmp, rtsp, mms, all\n"
-          "Examples:\n"
-          "  quvi --category all       ;# program default\n"
-          "  quvi --category rtmp,mms  ;# multiple categories\n");
-  exit (0);
-}
-
-static void check_category(const char *s, QUVIcategory *n)
-{
-  if (strlen(s) == 0)
-    return;
-
-  if (strcmp(s, "all") == 0)
-    *n = QUVIPROTO_ALL;
-  else if (strcmp(s, "help") == 0)
-    dump_category_help();
-  else
+  int i;
+  for (i=0, *n=0; i<opts->category_given; ++i)
     {
-      if (strcmp(s, "http") == 0)
-        *n |= QUVIPROTO_HTTP;
-      else if (strcmp(s, "rtmp") == 0)
-        *n |= QUVIPROTO_RTMP;
-      else if (strcmp(s, "rtsp") == 0)
-        *n |= QUVIPROTO_RTSP;
-      else if (strcmp(s, "mms") == 0)
-        *n |= QUVIPROTO_MMS;
-      else
+      switch (opts->category_arg[i])
         {
-          fprintf(stderr, "warning: --category: %s: invalid value, "
-                  "try \"help\"\n", s);
+        case category_arg_all:
+        case category__NULL:
+        default:
+          *n |= QUVIPROTO_ALL;
+          break;
+        case category_arg_http:
+          *n |= QUVIPROTO_HTTP;
+          break;
+        case category_arg_mms:
+          *n |= QUVIPROTO_MMS;
+          break;
+        case category_arg_rtmp:
+          *n |= QUVIPROTO_RTMP;
+          break;
+        case category_arg_rtsp:
+          *n |= QUVIPROTO_RTSP;
+          break;
         }
     }
-}
-
-static QUVIcategory parse_categories()
-{
-  char b[4], *p=opts->category_arg;
-  QUVIcategory n=0;
-  size_t i;
-
-  while (*p != '\0')
-    {
-      for (i=0; i<sizeof(b) && *p!='\0'; ++i,++p)
-        {
-          if (*p == ',')
-            {
-              ++p;
-              break;
-            }
-          b[i] = *p;
-        }
-      b[i] = '\0';
-      check_category(b, &n);
-    }
-
-  return (n);
 }
 
 static void depr_category(const char *o)
@@ -661,7 +625,7 @@ static void depr_category(const char *o)
 
 static void init_quvi()
 {
-  QUVIcategory category;
+  QUVIcategory categories;
   QUVIcode rc;
 
   if ((rc = quvi_init(&quvi)) != QUVI_OK)
@@ -679,40 +643,43 @@ static void init_quvi()
 
   /* Category. */
 
-  category = 0;
+  categories = 0;
 
   if (opts->category_arg != NULL)
-    category = parse_categories();
+    check_categories(&categories);
 
   /* Category: deprecated. To be removed in later versions. */
 
   if (opts->category_http_given == 1)
     {
       depr_category("--category-http");
-      category |= QUVIPROTO_HTTP;
+      categories |= QUVIPROTO_HTTP;
     }
   if (opts->category_rtmp_given == 1)
     {
       depr_category("--category-rtmp");
-      category |= QUVIPROTO_RTMP;
+      categories |= QUVIPROTO_RTMP;
     }
   if (opts->category_rtsp_given == 1)
     {
       depr_category("--category-rtsp");
-      category |= QUVIPROTO_RTSP;
+      categories |= QUVIPROTO_RTSP;
     }
   if (opts->category_mms_given == 1)
     {
       depr_category("--category-mms");
-      category |= QUVIPROTO_MMS;
+      categories |= QUVIPROTO_MMS;
     }
   if (opts->category_all_given == 1)
-    depr_category("--category-all");
+    {
+      depr_category("--category-all");
+      categories = QUVIPROTO_ALL;
+    }
 
-  if (category == 0)
-    category = QUVIPROTO_ALL;
+  if (categories == 0)
+    categories = QUVIPROTO_ALL;
 
-  quvi_setopt(quvi, QUVIOPT_CATEGORY, category);
+  quvi_setopt(quvi, QUVIOPT_CATEGORY, categories);
 
   /* Status callback */
 
