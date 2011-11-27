@@ -300,6 +300,21 @@ static void support(quvi_t quvi)
   exit(0);
 }
 
+static char * shell_escape( char *str )
+{
+  size_t len = strlen( str );
+  int i;
+  str = realloc( str, 2 * len + 1 );
+  if ( !str ) abort();
+  for ( i = len - 1; i >= 0; --i )
+    {
+      str[ 2 * i + 1 ] = str[ i ];
+      str[ 2 * i ]     = '\\';
+    }
+  str[ 2 * len ] = 0;
+  return str;
+}
+
 static void invoke_exec(quvi_media_t media)
 {
   char *cmd, *media_url, *q_media_url;
@@ -308,12 +323,15 @@ static void invoke_exec(quvi_media_t media)
 
   quvi_getprop(media, QUVIPROP_PAGETITLE, &page_title);
   t = strdup(page_title);
-  t = strepl(t, "\"", "\\\""); /* Escape existing double quotation marks */
-  asprintf(&q_page_title, "\"%s\"", t); /* Put inside quotation marks */
+  t = shell_escape(t);
+  asprintf(&q_page_title, "%s", t);
   _free(t);
 
   quvi_getprop(media, QUVIPROP_MEDIAURL, &media_url);
-  asprintf(&q_media_url, "\"%s\"", media_url);
+  t = strdup(media_url);
+  t = shell_escape(t);
+  asprintf(&q_media_url, "%s", t);
+  _free(t);
 
   cmd = strdup(opts->exec_arg);
   cmd = strepl(cmd, "%t", q_page_title);
