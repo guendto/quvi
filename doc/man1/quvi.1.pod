@@ -42,7 +42,7 @@ array containing the supported formats specific to the host.
 Use C<--query-formats> if you need to check an URL for the available
 formats.
 
-=head2 --export-format I<arg> (=json)
+=head2 -d, --export-format I<arg> (=json)
 
 Set the interchange format in which the data is to be printed.
 Possible values:
@@ -50,7 +50,7 @@ Possible values:
   json (default)
   xml
 
-=head2 --export-level I<arg> (=media)
+=head2 -l, --export-level I<arg> (=media)
 
 Set level of the exported interchange data. Possible values:
 
@@ -59,16 +59,14 @@ Set level of the exported interchange data. Possible values:
 
 See also C<--export-format>.
 
-=head2 -q, --quiet
+=head2 -v, --verbosity I<arg> (=verbose)
 
-Turn off all output printed to stderr (excl. any errors).
-If C<--verbose-libcurl> is specified, libcurl will continue
-to print messages to stderr. The media details will still
-be printed to stdout.
+Set the verbosity level of the printed messages. Possible values:
 
-=head2 --verbose-libcurl
-
-Turn on libcurl verbose mode.
+  debug   .. Everything, including libcurl generated messages
+  verbose .. Most messages (default)
+  quiet   .. Errors and warnings only
+  mute    .. Nothing at all
 
 =head2 --exec I<arg>
 
@@ -165,6 +163,17 @@ Maximum seconds allowed connection to server take. Default is 30.
 
 The following options have been marked as "deprecated" and will be
 removed in the later versions of quvi.
+
+=head2 -q, --quiet
+
+Turn off all output printed to stderr (excl. any errors).
+If C<--verbose-libcurl> is specified, libcurl will continue
+to print messages to stderr. The media details will still
+be printed to stdout. Use C<--verbosity> instead.
+
+=head2 --verbose-libcurl
+
+Turn on libcurl verbose mode. Use C<--verbosity> instead.
 
 =head2 --xml
 
