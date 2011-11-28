@@ -112,8 +112,8 @@ Set the verbosity level of the printed messages. Possible values:
 Invoke I<arg> after each successfully parsed URL. The following
 specifiers are supported:
 
+ %u  ..  Media stream URL
  %t  ..  Media title
- %u  ..  Media URL
 
 Note that I<each> occurence of the specifier will be replaced within
 the I<arg>. quvi accepts multiple occurrences of C<--exec>. See also
@@ -332,6 +332,13 @@ If set, libquvi prints the lua script search paths to the stderr.
 If set, the lua scripts found by libquvi are printed to the stderr.
 
  env LIBQUVI_SHOW_SCRIPT=1 quvi
+
+=head2 libcurl
+
+=head3 http_proxy
+
+http_proxy value is used if defined. Note, however, that C<--proxy> and
+C<--feature -proxy> both override this behaviour.
 
 =head1 EXIT STATUS
 
