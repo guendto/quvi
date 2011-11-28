@@ -208,6 +208,25 @@ static int status_callback(long param, void *data)
   return (0);
 }
 
+static void cleanup()
+{
+  if (input)
+    quvi_llst_free(&input);
+
+  if (quvi)
+    quvi_close(&quvi);
+
+  if (opts)
+    {
+      cmdline_parser_free(opts);
+      _free(opts);
+    }
+
+  assert(input == NULL);
+  assert(quvi == NULL);
+  assert(opts == NULL);
+}
+
 /* Divided into smaller blocks. Otherwise -pedantic objects. */
 
 #define LICENSE_1 \
@@ -236,7 +255,8 @@ static void license()
 {
   printf("%s *\n%s *\n%s *\n%s\n",
          LICENSE_1, LICENSE_2, LICENSE_3, LICENSE_4);
-  exit(0);
+  cleanup();
+  exit (0);
 }
 
 #undef LICENSE_4
@@ -256,7 +276,8 @@ static void print_version()
   printf("quvi %s\n  libquvi %s\n  libquvi-scripts %s\n",
          version, quvi_version(QUVI_VERSION_LONG),
          quvi_version(QUVI_VERSION_SCRIPTS));
-  exit(0);
+  cleanup();
+  exit (0);
 }
 
 static void dump_host(char *domain, char *formats)
@@ -289,8 +310,8 @@ static void supported(quvi_t quvi)
       else
         dump_error(quvi,rc);
     }
-
-  exit(rc);
+  cleanup();
+  exit (rc);
 }
 
 /* Query which formats are available for the URL */
@@ -302,6 +323,7 @@ static void query_formats(quvi_t quvi)
   if (opts->inputs_num <1)
     {
       spew_qe("error: no input URLs\n");
+      cleanup();
       exit (QUVI_INVARG);
     }
 
@@ -318,8 +340,8 @@ static void query_formats(quvi_t quvi)
       else
         dump_error(quvi,rc);
     }
-
-  exit(rc);
+  cleanup();
+  exit (rc);
 }
 
 /* dumps all supported hosts to stdout. */
@@ -350,8 +372,8 @@ static void support(quvi_t quvi)
           break;
         }
     }
-
-  exit(0);
+  cleanup();
+  exit (0);
 }
 
 static char * shell_escape( char *str )
@@ -407,7 +429,6 @@ static void invoke_exec(quvi_media_t media, const char *exec_arg)
       spew_e("error: child exited with: %d\n", rc >> 8);
       break;
     }
-
   _free(cmd);
 }
 
@@ -681,7 +702,8 @@ static void init_quvi()
   if ((rc = quvi_init(&quvi)) != QUVI_OK)
     {
       dump_error(quvi, rc);
-      exit(rc);
+      cleanup();
+      exit (rc);
     }
   assert(quvi != NULL);
 
@@ -790,25 +812,6 @@ static void init_quvi()
   curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, opts->connect_timeout_arg);
 }
 
-static void cleanup()
-{
-  if (input)
-    quvi_llst_free(&input);
-
-  if (quvi)
-    quvi_close(&quvi);
-
-  if (opts)
-    {
-      cmdline_parser_free(opts);
-      _free(opts);
-    }
-
-  assert(input == NULL);
-  assert(quvi == NULL);
-  assert(opts == NULL);
-}
-
 static void read_from(FILE *f)
 {
   char b[256];
@@ -912,7 +915,10 @@ static int parse_config(int argc, char **argv, char *home)
 
   asprintf(&fpath, "%s/%s", home, config_fname);
   if (fpath == NULL)
-    exit (QUVI_MEM);
+    {
+      cleanup();
+      exit (QUVI_MEM);
+    }
 
   have_config = config_exists(fpath);
   if (have_config == 0)
@@ -967,7 +973,10 @@ static void parse_cmdline(int argc, char **argv)
   if (have_config == 0)
     {
       if (cmdline_parser(argc, argv, opts) != 0)
-        exit (QUVI_INVARG);
+        {
+          cleanup();
+          exit (QUVI_INVARG);
+        }
     }
 }
 
@@ -1030,12 +1039,13 @@ static int process_queue()
 
 int main(int argc, char *argv[])
 {
+  int rc;
+
   assert(quvi == NULL);
   assert(curl == NULL);
   assert(opts == NULL);
   assert(input == NULL);
 
-  atexit(cleanup);
   parse_cmdline(argc, argv);
 
   if (opts->version_given == 1)
@@ -1066,7 +1076,10 @@ int main(int argc, char *argv[])
   if (opts->support_given == 1)
     support(quvi);
 
-  return (process_queue());
+  rc = process_queue();
+  cleanup();
+
+  return (rc);
 }
 
 /* vim: set ts=2 sw=2 tw=72 expandtab: */
