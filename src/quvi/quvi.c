@@ -676,7 +676,7 @@ static void depr_verbosity(const char *o)
 
 static void depr_feat(const char *o)
 {
-  spew_e("warning: %s: deprecated, use --feature instead\n", o);
+  spew_qe("warning: %s: deprecated, use --feature instead\n", o);
 }
 
 static int enabled(enum enum_feature on)
