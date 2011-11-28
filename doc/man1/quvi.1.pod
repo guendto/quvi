@@ -42,15 +42,22 @@ array containing the supported formats specific to the host.
 Use C<--query-formats> if you need to check an URL for the available
 formats.
 
-=head2 --export-errors
+=head2 --export-format I<arg> (=json)
 
-Print errors (to stderr) in the corresponding data interchange format.
-The default is JSON. See also C<--xml>.
+Set the interchange format in which the data is to be printed.
+Possible values:
 
-=head2 --xml
+  json (default)
+  xml
 
-Print the media details (and errors, if C<--export-errors> is specified)
-in XML.
+=head2 --export-level I<arg> (=media)
+
+Set level of the exported interchange data. Possible values:
+
+  media    .. Media only (default)
+  +errors  .. Media and error messages
+
+See also C<--export-format>.
 
 =head2 -q, --quiet
 
@@ -158,6 +165,11 @@ Maximum seconds allowed connection to server take. Default is 30.
 
 The following options have been marked as "deprecated" and will be
 removed in the later versions of quvi.
+
+=head2 --xml
+
+Print the media details (and errors, if C<--export-level=+errors> is specified)
+in XML. Use C<--export-format> instead.
 
 =head2 --category-http
 
