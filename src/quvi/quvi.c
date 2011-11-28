@@ -764,6 +764,7 @@ static void init_quvi()
   proxy = enabled(feature_arg_proxy);
 
   /* Deprecated. */
+
   if (opts->no_proxy_given == 1)
     {
       depr_feat("--no-proxy");
@@ -774,15 +775,13 @@ static void init_quvi()
   printf("resolve=%d, verify=%d, proxy=%d\n", resolve, verify, proxy);
 #endif
 
-  /* -- */
-
   if (proxy == 0)
     curl_easy_setopt(curl, CURLOPT_PROXY, "");
 
   if (opts->verbose_libcurl_given)
     {
+      depr_verbosity("--verbose-libcurl"); /* Must come before next line */
       opts->verbosity_arg = verbosity_arg_debug;
-      depr_verbosity("--verbose-libcurl");
     }
 
   curl_easy_setopt(curl, CURLOPT_VERBOSE,
