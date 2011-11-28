@@ -94,9 +94,16 @@ non-HTTP media stream URLs.
 
 =head2 -c, --category I<arg> (=all)
 
-Enable category I<arg> webscripts. I<arg> may a list of the categories
-to enable, each category separated by a comma (','). I<arg> can also
-be C<help>. All of the categories are enabled by default.
+Enable the level of the libquvi script categories. By default, all of the
+categories levels are enabled. Possible values:
+
+  http
+  rtmp
+  rtsp
+  mms
+
+quvi accepts multiple occurrences of C<--category>. See also L</EXAMPLES>.
+
 
 =head2 -F, --query-formats
 
@@ -201,9 +208,9 @@ strings from this list with C<--format>.
 
 Print the supported websites. The domain strings are patterns.
 
-=head2 quvi --support -c rtmp
+=head2 quvi --support -c rtmp -c mms
 
-Same but print only those from the RTMP category.
+Same but print only those from the RTMP and the MMS categories.
 
 =head2 quvi --support "URL"
 
