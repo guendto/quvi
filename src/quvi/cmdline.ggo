@@ -1,62 +1,36 @@
-package "quvi"
-version ""
-
-option "version"
-    - "Print version and exit"
-    optional
-option "license"
-    - "Print license and exit"
-    optional
-option "support"
-    - "Print supported websites and exit"
-    optional
-
-option "export-format"   d  "Export in data interchange format"     optional
-                                enum    typestr="value"   default="json"
-                                values="json","xml"
-option "export-level"    l  "Level of exported data"                optional
-                                enum    typestr="value"  default="media"
-                                values="media","+errors"
-option "verbosity"       v  "Verbosity level of printed messages" optional
-                                enum    typestr="value"  default="verbose"
-                                values="debug","verbose","quiet","mute"
-
-option "category"        c  "Level of libquvi scripts to enable"    optional
-                                enum    typestr="value"   default="all"
-                                values="http","mms","rtsp","rtmp","all"
-                                multiple
-
+package "quvi"  version ""
+option "version"         -  "Print version and exit"                  optional
+option "license"         -  "Print license and exit"                  optional
+option "support"         -  "Print supported websites and exit"       optional
+option "query-formats"   F  "Query available formats to URL"          optional
+option "agent"           -  "Identify as"                             optional
+                                string  typestr="value"  default="Mozilla/5.0"
+option "proxy"           -  "Use proxy with HTTP connections"         optional
+                                string  typestr="value"
+option "connect-timeout" -  "Seconds connecting allowed to take"      optional
+                                int     typestr="value"  default="30"
 option "exec"            -  "Execute command when done parsing"       optional
                                 string  typestr="value"  multiple
-
-option "feature"         e  "Enable (or disable) feature"   optional
-                                enum    typestr="value"     multiple
+option "format"          f  "Query for format of media"               optional
+                                string  typestr="value"  default="default"
+option "verbosity"       v  "Verbosity level of printed messages"     optional
+                                enum    typestr="value"  default="verbose"
+                                values="debug","verbose","quiet","mute"
+option "category"        c  "Level of libquvi scripts to enable"      optional
+                                enum    typestr="value"  default="all"
+                                values="http","mms","rtsp","rtmp","all"
+                                multiple
+option "export-format"   d  "Export in data interchange format"       optional
+                                enum    typestr="value"  default="json"
+                                values="json","xml"
+option "export-level"    l  "Level of exported data"                  optional
+                                enum    typestr="value"  default="media"
+                                values="media","+errors"
+option "feature"         e  "Enable (or disable) feature"             optional
+                                enum    typestr="value"
                                 values="resolve","-resolve","verify","-verify",
                                        "proxy","-proxy"
-
-option "query-formats"
-    F "Query available formats to URL"
-    optional
-option "format"
-    f "Get format arg of media"
-    string typestr="arg"
-    default="default"
-    optional
-
-option "agent"
-    - "Identify as arg"
-    string typestr="arg"
-    default="Mozilla/5.0"
-    optional
-option "proxy"
-    - "Use HTTP proxy arg (e.g. http://addr:port)"
-    string typestr="arg"
-    optional
-option "connect-timeout"
-    - "Seconds connecting allowed to take"
-    int typestr="arg"
-    default="30"
-    optional
+                                multiple
 
 section "Deprecated"
 option "category-all"    a  "All website script categories" optional
