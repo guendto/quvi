@@ -11,6 +11,23 @@ quvi [options] [url ...] [file ...]
 quvi is a command line tool for parsing flash media stream URLs.
 It supports many websites including YouTube and Dailymotion.
 
+=head1 COMMAND LINE PARSER
+
+GNU gengetopt is very flexible.
+
+=head2 Example
+
+  quvi --category http --category rtmp --verbosity debug \
+       --export-level +errors --feature -verify --feature -resolve
+
+=head2 Same as above but with short options
+
+  quvi -c http -c rtmp -v debug -l +errors -e -verify -e -resolve
+
+=head2 Or even simply
+
+  quvi -ch -cr -vd -l+ -e-v -e-r
+
 =head1 OPTIONS
 
 quvi reads standard input by default. It can also read the URLs from
@@ -33,7 +50,7 @@ Print license and exit.
 Print supported hosts and exit. If I<arg> is present, the program
 checks whether the I<arg> is supported.
 
-The default behaviour, without I<arg>, causes quvi to print the
+The default behaviour, without an I<arg>, causes quvi to print the
 supported websites. The B<first> string is the domain string which
 is, in fact, a (Lua) pattern used to match the URL to a libquvi
 script. The B<second> string is, I<now obsolete> (see below), an
@@ -41,6 +58,8 @@ array containing the supported formats specific to the host.
 
 Use C<--query-formats> if you need to check an URL for the available
 formats.
+
+See also L</EXAMPLES>.
 
 =head2 -e, --feature I<arg>
 
@@ -86,15 +105,15 @@ if it is defined in B<http_proxy>.
 Set the interchange format in which the data is to be printed.
 Possible values:
 
-  json (default)
-  xml
+ json .. Print in JSON (default)
+ xml  .. Print in XML
 
 =head2 -l, --export-level I<arg> (=media)
 
 Set level of the exported interchange data. Possible values:
 
-  media    .. Media only (default)
-  +errors  .. Media and error messages
+ media    .. Media only (default)
+ +errors  .. Media and error messages
 
 See also C<--export-format>.
 
@@ -102,10 +121,10 @@ See also C<--export-format>.
 
 Set the verbosity level of the printed messages. Possible values:
 
-  debug   .. Everything, including libcurl generated messages
-  verbose .. Most messages (default)
-  quiet   .. Errors and warnings only
-  mute    .. Nothing at all
+ debug   .. Everything, including libcurl generated messages
+ verbose .. Most messages (default)
+ quiet   .. Errors and warnings only
+ mute    .. Nothing at all
 
 =head2 --exec I<arg>
 
@@ -124,10 +143,11 @@ L</EXAMPLES>.
 Enable the level of the libquvi script categories. By default, all of the
 categories levels are enabled. Possible values:
 
-  http
-  rtmp
-  rtsp
-  mms
+ http  .. HTTP category scripts only
+ rtmp  .. RTMP ...
+ rtsp  .. RTSP ...
+ mms   .. MMS ...
+ all   .. All of the above
 
 quvi accepts multiple occurrences of C<--category>. See also L</EXAMPLES>.
 
@@ -251,7 +271,7 @@ with unexpected results.
 
 Typical use.
 
-=head2 quvi --xml "URL"
+=head2 quvi -d xml "URL"
 
 Same but print the results in XML.
 
