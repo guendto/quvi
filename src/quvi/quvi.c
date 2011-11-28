@@ -687,7 +687,7 @@ static int enabled(enum enum_feature on)
     {
       if (opts->feature_arg[i] == on)
         r = 1;
-      else if (opts->feature_arg[i] == on+1)
+      else if (opts->feature_arg[i] == off)
         r = 0;
     }
   return (r);
