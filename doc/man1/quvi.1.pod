@@ -42,6 +42,45 @@ array containing the supported formats specific to the host.
 Use C<--query-formats> if you need to check an URL for the available
 formats.
 
+=head2 -e, --feature I<arg>
+
+Enable or disable a feature. See also L</EXAMPLES>. Possible values:
+
+=head3 resolve (default)
+
+Resolve HTTP directions, e.g. shortened URLs. See below.
+
+=head3 -resolve
+
+Do not resolve HTTP redirections. When used, quvi will not be able to
+resolve most of the "shortened URLs" produced by different URL shortening
+services.
+
+Note that libquvi scripts that explicitly (need to) resolve redirections
+will continue to do so even if this switch is used.
+
+=head3 verify (default)
+
+Verify media stream URL after parsing. See below.
+
+=head3 -verify
+
+Do not verify media stream URL after parsing. When used, some
+media details, e.g. content length, will not become available.
+
+Note that libquvi skips the verification automatically with all
+non-HTTP media stream URLs.
+
+=head3 proxy (default)
+
+Use a HTTP proxy with connections if it is defined using either
+the C<--proxy> or the B<http_proxy> value. See below.
+
+=head3 -proxy
+
+Disable use of a HTTP proxy completely. Proxy will not be used even
+if it is defined in B<http_proxy>.
+
 =head2 -d, --export-format I<arg> (=json)
 
 Set the interchange format in which the data is to be printed.
@@ -79,23 +118,6 @@ specifiers are supported:
 Note that I<each> occurence of the specifier will be replaced within
 the I<arg>. quvi accepts multiple occurrences of C<--exec>. See also
 L</EXAMPLES>.
-
-=head2 -r, --no-resolve
-
-Do not resolve HTTP redirections. When used, quvi will not be able
-to resolve most of the "shortened URLs" produced by different URL
-shortening services.
-
-Note that libquvi scripts that explicitly (need to) resolve
-redirections will continue to do so even if this switch is used.
-
-=head2 -n, --no-verify
-
-Do not verify media stream URL after parsing. When used, some
-media details, e.g. content length, will not become available.
-
-Note that libquvi skips the verification automatically with all
-non-HTTP media stream URLs.
 
 =head2 -c, --category I<arg> (=all)
 
@@ -150,11 +172,6 @@ Identify quvi as I<arg> to the HTTP servers. Default is "Mozilla/5.0".
 Use proxy for HTTP connections, e.g. "http://foo:1234". You can also
 define B<http_proxy> environment setting to for the same effect.
 
-=head2 --no-proxy
-
-Disable use of HTTP proxy completely. Proxy will not be used even
-if it is defined in B<http_proxy>.
-
 =head2 --connect-timeout I<seconds>
 
 Maximum seconds allowed connection to server take. Default is 30.
@@ -163,6 +180,29 @@ Maximum seconds allowed connection to server take. Default is 30.
 
 The following options have been marked as "deprecated" and will be
 removed in the later versions of quvi.
+
+=head2 --no-proxy
+
+Disable use of HTTP proxy completely. Proxy will not be used even
+if it is defined in B<http_proxy>. Use C<--feature> instead.
+
+=head2 -r, --no-resolve
+
+Do not resolve HTTP redirections. When used, quvi will not be able
+to resolve most of the "shortened URLs" produced by different URL
+shortening services.
+
+Note that libquvi scripts that explicitly (need to) resolve
+redirections will continue to do so even if this switch is used.
+Use C<--feature> instead.
+
+=head2 -n, --no-verify
+
+Do not verify media stream URL after parsing. When used, some
+media details, e.g. content length, will not become available.
+
+Note that libquvi skips the verification automatically with all
+non-HTTP media stream URLs. Use C<--feature> instead.
 
 =head2 -q, --quiet
 
@@ -238,11 +278,11 @@ Same but print only those from the RTMP and the MMS categories.
 Check whether the URL is supported. This does not require an Internet
 connection but will fail with most "shortened" URLs.
 
-=head2 quvi -qrn "URL" --exec "echo %t" --exec "vlc %u"
+=head2 quvi -vm -e-r -e-v "URL" --exec "echo %t" --exec "vlc %u"
 
-Be quiet (-q), do not resolve HTTP redirections (-r) and skip media
-stream URL verification (-n). Print media title using echo(1), open
-media stream URL in vlc(1).
+Mute message output (-vm), do not resolve HTTP redirections (-e-r) and
+skip media stream URL verification (-e-v). Print media title using
+echo(1), open media stream URL in vlc(1).
 
 =head1 FILES
 
@@ -251,10 +291,8 @@ media stream URL in vlc(1).
 Most of the command line options can also be defined in the
 configuration file. For example:
 
- agent = some_agent/1.0     # --agent
+ agent = foo/1.0            # --agent
  proxy = http://foo:1234    # --proxy
- no-verify                  # --no-verify
- verbose-libcurl            # --verbose-libcurl
 
 You can also use $QUVI_HOME instead of $HOME.
 
