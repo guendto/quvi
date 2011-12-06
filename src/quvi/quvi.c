@@ -395,6 +395,7 @@ static void invoke_exec(quvi_media_t media, const char *exec_arg)
 {
   char *cmd, *media_url, *q_media_url;
   char *page_title, *q_page_title, *t;
+  char *suffix, *q_suffix;
   int rc;
 
   quvi_getprop(media, QUVIPROP_PAGETITLE, &page_title);
@@ -409,12 +410,20 @@ static void invoke_exec(quvi_media_t media, const char *exec_arg)
   asprintf(&q_media_url, "%s", t);
   _free(t);
 
+  quvi_getprop(media, QUVIPROP_FILESUFFIX, &suffix);
+  t = strdup(suffix);
+  t = shell_escape(t);
+  asprintf(&q_suffix, "%s", t);
+  _free(t);
+
   cmd = strdup(exec_arg);
   cmd = strepl(cmd, "%t", q_page_title);
   cmd = strepl(cmd, "%u", q_media_url);
+  cmd = strepl(cmd, "%e", q_suffix);
 
   _free(q_page_title);
   _free(q_media_url);
+  _free(q_suffix);
 
   rc = system(cmd);
 
