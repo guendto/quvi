@@ -134,6 +134,7 @@ specifiers are supported:
  %u  ..  Media stream URL
  %t  ..  Media title
  %e  ..  Media file suffix (extension)
+ %h  ..  Media thumbnail URL
 
 Note that I<each> occurence of the specifier will be replaced within
 the I<arg>. quvi accepts multiple occurrences of C<--exec>. See also
