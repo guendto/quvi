@@ -97,7 +97,7 @@ static void spew(const char *fmt, ...)
   va_end(ap);
 }
 
-static void dump_error_json(quvi_t quvi, QUVIcode rc)
+static void dump_error_json(QUVIcode rc)
 {
   spew_e("{\n"
          "  \"error\": [\n"
@@ -108,7 +108,7 @@ static void dump_error_json(quvi_t quvi, QUVIcode rc)
          "}\n", quvi_strerror(quvi, rc));
 }
 
-static void dump_error_xml(quvi_t quvi, QUVIcode rc)
+static void dump_error_xml(QUVIcode rc)
 {
   spew_e("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
          "<error>\n"
@@ -117,7 +117,7 @@ static void dump_error_xml(quvi_t quvi, QUVIcode rc)
          quvi_strerror(quvi, rc));
 }
 
-static void dump_error(quvi_t quvi, QUVIcode rc)
+static void dump_error(QUVIcode rc)
 {
   switch (opts->export_level_arg)
     {
@@ -132,10 +132,10 @@ static void dump_error(quvi_t quvi, QUVIcode rc)
         case export_format_arg_json:
         case export_format__NULL:
         default:
-          dump_error_json(quvi, rc);
+          dump_error_json(rc);
           break;
         case export_format_arg_xml:
-          dump_error_xml(quvi, rc);
+          dump_error_xml(rc);
           break;
         }
     }
@@ -288,7 +288,7 @@ static void dump_host(char *domain, char *formats)
 }
 
 /* Wraps quvi_supported_ident. */
-static void supported(quvi_t quvi)
+static void supported()
 {
   quvi_ident_t ident;
   unsigned int i;
@@ -308,14 +308,14 @@ static void supported(quvi_t quvi)
           quvi_supported_ident_close(&ident);
         }
       else
-        dump_error(quvi,rc);
+        dump_error(rc);
     }
   cleanup();
   exit (rc);
 }
 
 /* Query which formats are available for the URL */
-static void query_formats(quvi_t quvi)
+static void query_formats()
 {
   unsigned int i;
   QUVIcode rc;
@@ -338,14 +338,14 @@ static void query_formats(quvi_t quvi)
           quvi_free(formats);
         }
       else
-        dump_error(quvi,rc);
+        dump_error(rc);
     }
   cleanup();
   exit (rc);
 }
 
 /* dumps all supported hosts to stdout. */
-static void support(quvi_t quvi)
+static void support()
 {
   int done = 0;
 
@@ -719,7 +719,7 @@ static void init_quvi()
 
   if ((rc = quvi_init(&quvi)) != QUVI_OK)
     {
-      dump_error(quvi, rc);
+      dump_error(rc);
       cleanup();
       exit (rc);
     }
@@ -1038,7 +1038,7 @@ static int process_queue()
         }
       else
         {
-          dump_error(quvi, rc);
+          dump_error(rc);
           last_error = rc;
           ++errors;
         }
