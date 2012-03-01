@@ -1,3 +1,9 @@
+v0.4.2 (2012-03-01) / Toni Gundogdu
+
+Bastien Nocera:
+  - Add "%e" to print the extension of the linked file [8c82966]
+  - Add "%h" to print the thumbnail URL for a link [9e463f0]
+
 
 0.4.1  Mon Nov 28 2011  Toni Gundogdu
 Changes:
