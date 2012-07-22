@@ -122,7 +122,9 @@ static void dump_error(QUVIcode rc)
   switch (opts->export_level_arg)
     {
     case export_level_arg_media:
+#ifdef HAVE_GENGETOPT_2_22_5
     case export_level__NULL:
+#endif
     default:
       spew_e("error: %s\n", quvi_strerror(quvi, rc));
       break;
@@ -130,7 +132,9 @@ static void dump_error(QUVIcode rc)
       switch (opts->export_format_arg)
         {
         case export_format_arg_json:
+#ifdef HAVE_GENGETOPT_2_22_5
         case export_format__NULL:
+#endif
         default:
           dump_error_json(rc);
           break;
@@ -657,7 +661,9 @@ static void check_categories(QUVIcategory *n)
       switch (opts->category_arg[i])
         {
         case category_arg_all:
+#ifdef HAVE_GENGETOPT_2_22_5
         case category__NULL:
+#endif
         default:
           *n |= QUVIPROTO_ALL;
           break;
