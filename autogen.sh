@@ -27,7 +27,7 @@ gen_cmdline()
 {
   echo "Generate cmdline..."
   gengetopt < src/quvi/cmdline.ggo \
-    -C --unamed-opts=URL --output-dir src/quvi --no-version
+    -C --unamed-opts=URL --output-dir src/quvi --no-version || exit 1
 }
 
 gen_manual()
