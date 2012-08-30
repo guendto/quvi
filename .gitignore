@@ -27,3 +27,4 @@ src/quvi/cmdline.c
 src/quvi/cmdline.h
 ChangeLog
 VERSION
+INSTALL
