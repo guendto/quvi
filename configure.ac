@@ -3,11 +3,8 @@
 
 AC_PREREQ([2.67])
 
-m4_include([m4/version.m4])
-
-AC_INIT([quvi], [_QUVI_VERSION],
-  [http://sourceforge.net/apps/trac/quvi/], [],
-  [http://quvi.sourceforge.net/])
+AC_INIT([quvi], m4_esyscmd([./gen-ver.sh -c | tr -d '\n']),
+        [http://quvi.sf.net/bugs/],[],[http://quvi.sf.net/])
 
 AC_CONFIG_SRCDIR([src/quvi/quvi.c])
 AC_CONFIG_HEADERS([config.h])
@@ -51,7 +48,7 @@ AC_CHECK_FUNCS([vasprintf], [
 AM_CONDITIONAL([NO_ASPRINTF], [test x"$have_asprintf" != "xyes"])
 
 # Version.
-VN=`$srcdir/gen-ver.sh $srcdir`
+VN=`$srcdir/gen-ver.sh`
 AC_DEFINE_UNQUOTED([VN],["$VN"], [We have version number from gen-ver.sh])
 
 # --with-manual
@@ -71,7 +68,7 @@ AC_CONFIG_FILES([
 AC_OUTPUT
 
 AC_MSG_NOTICE([
-  version:        ${VERSION} (${VN})
+  version:        ${VERSION}
   prefix:         ${prefix}
   compiler:       ${CC}
   cflags:         ${CFLAGS}
