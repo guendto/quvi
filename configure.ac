@@ -72,8 +72,12 @@ AC_OUTPUT
 
 AC_MSG_NOTICE([
   version:        ${VERSION} (${VN})
-  host setup:     ${host}
+  prefix:         ${prefix}
   compiler:       ${CC}
   cflags:         ${CFLAGS}
-  prefix:         ${prefix}
+System types
+  target          ${target}
+  build           ${build}
+  host            ${host}
+Options
   install manual: ${with_manual}])
