@@ -22,6 +22,7 @@ AC_DEFINE_UNQUOTED([CANONICAL_HOST], "$host", [...])
 
 AM_INIT_AUTOMAKE([1.11.1 -Wall -Werror dist-xz no-dist-gzip tar-ustar])
 AM_SILENT_RULES([yes])
+#AM_PROG_AR
 
 # Checks for programs.
 AC_PROG_CC
