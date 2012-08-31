@@ -1,5 +1,5 @@
 
-EXTRA_DIST=	cmdline.ggo
+EXTRA_DIST=
 
 src=	cmdline.c quvi.c strepl.c
 hdr=	cmdline.h platform.h

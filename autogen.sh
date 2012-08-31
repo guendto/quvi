@@ -23,13 +23,6 @@ set -e
 source=.gitignore
 cachedir=autom4te.cache
 
-gen_cmdline()
-{
-  echo "Generate cmdline..."
-  gengetopt < src/quvi/cmdline.ggo \
-    -C --unamed-opts=URL --output-dir src/quvi --no-version || exit 1
-}
-
 gen_manual()
 {
   echo "Generate manual..."
@@ -75,5 +68,4 @@ done
 
 mkdir -p m4
 echo "Generate configuration files..."
-autoreconf -if && gen_cmdline && gen_manual &&
-  echo "You can now run 'configure'"
+autoreconf -if && gen_manual && echo "You can now run 'configure'"
