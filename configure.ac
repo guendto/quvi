@@ -58,8 +58,6 @@ AC_TYPE_SIZE_T
 
 # Checks for library functions.
 AC_CHECK_FUNCS([memset strchr strcspn strdup strerror strspn strstr strtol])
-AC_FUNC_REALLOC
-AC_FUNC_MALLOC
 
 # Version.
 VN=`$srcdir/gen-ver.sh`
