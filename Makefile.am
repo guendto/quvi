@@ -1,7 +1,7 @@
 ACLOCAL_AMFLAGS=-I m4
-EXTRA_DIST=	gen-ver.sh VERSION
+EXTRA_DIST=gen-ver.sh VERSION
 
-SUBDIRS=	src
+SUBDIRS=po src
 if WITH_MANUAL
 SUBDIRS+=	doc
 endif
