@@ -53,8 +53,6 @@ AM_CONDITIONAL([HAVE_LIBXML], [test x"$have_libxml" = "xyes"])
 AC_CHECK_HEADERS([stdarg.h stdlib.h string.h stddef.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
-AC_CHECK_TYPES([ptrdiff_t])
-AC_TYPE_SIZE_T
 
 # Checks for library functions.
 AC_CHECK_FUNCS([setlocale])
