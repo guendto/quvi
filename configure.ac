@@ -21,6 +21,12 @@ AM_INIT_AUTOMAKE([1.11.1 -Wall -Werror dist-xz no-dist-gzip tar-ustar])
 AM_SILENT_RULES([yes])
 #AM_PROG_AR
 
+AM_GNU_GETTEXT_VERSION([0.18.1])
+AM_GNU_GETTEXT([external])
+# GETTEXT_PACKAGE is used by glib.
+AC_DEFINE([GETTEXT_PACKAGE], [PACKAGE], [Define to the gettext package name])
+AC_SUBST([GETTEXT_PACKAGE], [PACKAGE])
+
 # Checks for programs.
 AC_PROG_CC
 AM_PROG_CC_C_O
@@ -74,7 +80,9 @@ AC_CONFIG_FILES([
   doc/Makefile
   doc/man1/Makefile
   src/Makefile
-  src/quvi/Makefile])
+  src/quvi/Makefile
+  po/Makefile.in
+])
 AC_OUTPUT
 
 AC_MSG_NOTICE([
