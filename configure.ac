@@ -50,7 +50,7 @@ PKG_CHECK_MODULES([libxml], [libxml-2.0 >= 2.7.8],
 AM_CONDITIONAL([HAVE_LIBXML], [test x"$have_libxml" = "xyes"])
 
 # Checks for header files.
-AC_CHECK_HEADERS([stdarg.h stdlib.h string.h stddef.h])
+AC_CHECK_HEADERS([locale.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 
