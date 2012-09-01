@@ -57,7 +57,7 @@ AC_CHECK_TYPES([ptrdiff_t])
 AC_TYPE_SIZE_T
 
 # Checks for library functions.
-AC_CHECK_FUNCS([memset strchr strcspn strdup strerror strspn strstr strtol])
+AC_CHECK_FUNCS([setlocale])
 
 # Version.
 VN=`$srcdir/gen-ver.sh`
