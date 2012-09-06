@@ -21,6 +21,9 @@ AM_INIT_AUTOMAKE([1.11.1 -Wall -Werror dist-xz no-dist-gzip tar-ustar])
 AM_SILENT_RULES([yes])
 #AM_PROG_AR
 
+LT_INIT([disable-static])
+LT_PREREQ([2.2.6])
+
 AM_GNU_GETTEXT_VERSION([0.18.1])
 AM_GNU_GETTEXT([external])
 # GETTEXT_PACKAGE is used by glib.
@@ -80,6 +83,7 @@ AC_CONFIG_FILES([
   doc/Makefile
   doc/man1/Makefile
   src/Makefile
+  src/opts/Makefile
   src/quvi/Makefile
   po/Makefile.in
 ])
