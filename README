@@ -1,7 +1,8 @@
 General
 =======
 
-quvi is a script development tool for libquvi-scripts.
+quvi is the command line tool for developing the libquvi scripts and
+parsing the media properties.
 
 gitweb: <http://repo.or.cz/w/quvi-tool.git>
 Home  : <http://quvi.sourceforge.net/>
@@ -59,6 +60,14 @@ Requirements
 * GLib 2.24.2
   http://library.gnome.org/devel/glib/
 
+* JsonGlib 0.12
+  http://live.gnome.org/JsonGlib
+  NOTE: builds without: JSON output will be disabled
+
+* libxml 2.7.8
+  http://www.xmlsoft.org/
+  NOTE: builds without: XML output will be disabled
+
 * pkg-config for tracking the compilation flags needed for libraries
   http://www.freedesktop.org/software/pkgconfig/
 
@@ -84,4 +93,4 @@ Please see: http://quvi.sourceforge.net/#contrib
 License
 =======
 
-quvi is Free Software, licensed under the LGPLv2.1+.
+quvi is Free Software, licensed under the GNU Affero GPLv3+.
