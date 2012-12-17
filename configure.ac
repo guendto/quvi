@@ -28,6 +28,7 @@ AM_PROG_CC_C_O
 # Checks for libraries.
 PKG_CHECK_MODULES([libquvi], [libquvi-0.9 >= 0.9])
 PKG_CHECK_MODULES([libcurl], [libcurl >= 7.18.2])
+PKG_CHECK_MODULES([gobject], [gobject-2.0 >= 2.24])
 PKG_CHECK_MODULES([glib], [glib-2.0 >= 2.24])
 
 # Checks for header files.
