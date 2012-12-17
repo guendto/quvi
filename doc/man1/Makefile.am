@@ -1,2 +1,2 @@
-EXTRA_DIST=	quvi.1.pod
-dist_man_MANS=	quvi.1
+EXTRA_DIST=
+dist_man_MANS=
