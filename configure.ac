@@ -31,6 +31,15 @@ PKG_CHECK_MODULES([libcurl], [libcurl >= 7.18.2])
 PKG_CHECK_MODULES([gobject], [gobject-2.0 >= 2.24])
 PKG_CHECK_MODULES([glib], [glib-2.0 >= 2.24])
 
+PKG_CHECK_MODULES([json_glib], [json-glib-1.0 >= 0.12],
+  [have_json_glib=yes
+   AC_DEFINE([HAVE_JSON_GLIB], [1], [Define to json-glib package])
+  ],
+  [have_json_glib=no
+   AC_MSG_NOTICE([json-glib 0.12+ not found, building without json output])
+  ])
+AM_CONDITIONAL([HAVE_JSON_GLIB], [test x"$have_json_glib" = "xyes"])
+
 # Checks for header files.
 AC_CHECK_HEADERS([stdarg.h stdlib.h string.h stddef.h])
 
@@ -78,5 +87,8 @@ System types
   target          ${target}
   build           ${build}
   host            ${host}
-Options
-  install manual: ${with_manual}])
+Build options:
+  have json-glib: ${have_json_glib}
+Install options:
+  with:
+  - manual: ${with_manual}])
