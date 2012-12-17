@@ -87,8 +87,6 @@ AC_CONFIG_FILES([
   doc/Makefile
   doc/man1/Makefile
   src/Makefile
-  src/opts/Makefile
-  src/quvi/Makefile
   po/Makefile.in
 ])
 AC_OUTPUT
