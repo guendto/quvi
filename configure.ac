@@ -39,6 +39,15 @@ PKG_CHECK_MODULES([json_glib], [json-glib-1.0 >= 0.12],
    AC_MSG_NOTICE([json-glib 0.12+ not found, building without json output])
   ])
 AM_CONDITIONAL([HAVE_JSON_GLIB], [test x"$have_json_glib" = "xyes"])
+ 
+PKG_CHECK_MODULES([libxml], [libxml-2.0 >= 2.7.8],
+  [have_libxml=yes
+   AC_DEFINE([HAVE_LIBXML], [1], [Define to libxml package])
+  ],
+  [have_libxml=no
+   AC_MSG_NOTICE([libxml 2.7.8+ not found, building without xml output])
+  ])
+AM_CONDITIONAL([HAVE_LIBXML], [test x"$have_libxml" = "xyes"])
 
 # Checks for header files.
 AC_CHECK_HEADERS([stdarg.h stdlib.h string.h stddef.h])
@@ -87,8 +96,9 @@ System types
   target          ${target}
   build           ${build}
   host            ${host}
-Build options:
-  have json-glib: ${have_json_glib}
-Install options:
-  with:
-  - manual: ${with_manual}])
+Build options
+  json-glib 0.12+ ${have_json_glib}
+  libxml 2.7.8+   ${have_libxml}
+Install options
+  with
+  - manual  ${with_manual}])
