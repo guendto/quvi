@@ -1,1 +1,1 @@
-SUBDIRS=	quvi
+SUBDIRS=
