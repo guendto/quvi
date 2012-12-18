@@ -6,6 +6,7 @@ src=\
   status.c
 
 hdr=\
+  cmd.h\
   opts.h
 
 bin_PROGRAMS=quvi
