@@ -26,6 +26,12 @@ doc/Makefile.in
 doc/man1/Makefile.in
 doc/man1/quvi.1
 src/Makefile.in
+src/get/Makefile.in
+src/input/Makefile.in
+src/opts/Makefile.in
+src/pbar/Makefile.in
+src/print/Makefile.in
+src/util/Makefile.in
 ChangeLog
 VERSION
 INSTALL
