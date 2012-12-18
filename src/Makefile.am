@@ -1,4 +1,4 @@
-SUBDIRS=opts
+SUBDIRS=opts util
 
 src=\
   main.c
@@ -11,6 +11,7 @@ quvi_SOURCES=$(src) $(hdr)
 quvi_CPPFLAGS=\
   -DLOCALEDIR=\""$(localedir)"\"\
   -I$(top_srcdir)/src/opts/\
+  -I$(top_srcdir)/src/util/\
   -I$(top_srcdir)/src/\
   $(libquvi_CFLAGS)\
   $(libcurl_CFLAGS)\
@@ -26,6 +27,7 @@ quvi_LDFLAGS=\
 
 quvi_LDADD=\
   $(top_builddir)/src/opts/libopts.la\
+  $(top_builddir)/src/util/libutil.la\
   $(libquvi_LIBS)\
   $(libcurl_LIBS)\
   $(gobject_LIBS)\
