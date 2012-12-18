@@ -86,6 +86,7 @@ AC_CONFIG_FILES([
   Makefile
   doc/Makefile
   doc/man1/Makefile
+  src/opts/Makefile
   src/Makefile
   po/Makefile.in
 ])
