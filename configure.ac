@@ -68,7 +68,8 @@ AC_CHECK_HEADERS([locale.h])
 # Checks for typedefs, structures, and compiler characteristics.
 
 # Checks for library functions.
-AC_CHECK_FUNCS([setlocale])
+AC_CHECK_FUNCS([setlocale memset strerror])
+AC_FUNC_STRERROR_R
 
 # Version.
 VN=`$srcdir/gen-ver.sh`
