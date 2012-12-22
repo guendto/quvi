@@ -2,7 +2,8 @@ SUBDIRS=get input pbar print opts util
 
 src=\
   main.c\
-  opts.c
+  opts.c\
+  status.c
 
 hdr=\
   opts.h
