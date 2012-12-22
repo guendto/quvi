@@ -1,4 +1,4 @@
-SUBDIRS=input print opts util
+SUBDIRS=input pbar print opts util
 
 src=\
   main.c
@@ -12,6 +12,7 @@ quvi_CPPFLAGS=\
   -DLOCALEDIR=\""$(localedir)"\"\
   -I$(top_srcdir)/src/input/\
   -I$(top_srcdir)/src/opts/\
+  -I$(top_srcdir)/src/pbar/\
   -I$(top_srcdir)/src/print/\
   -I$(top_srcdir)/src/util/\
   -I$(top_srcdir)/src/\
@@ -30,6 +31,7 @@ quvi_LDFLAGS=\
 quvi_LDADD=\
   $(top_builddir)/src/input/libinput.la\
   $(top_builddir)/src/opts/libopts.la\
+  $(top_builddir)/src/pbar/libpbar.la\
   $(top_builddir)/src/print/libprint.la\
   $(top_builddir)/src/util/libutil.la\
   $(libquvi_LIBS)\
