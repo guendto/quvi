@@ -1,4 +1,4 @@
-SUBDIRS=input pbar print opts util
+SUBDIRS=get input pbar print opts util
 
 src=\
   main.c
@@ -10,6 +10,7 @@ quvi_SOURCES=$(src) $(hdr)
 
 quvi_CPPFLAGS=\
   -DLOCALEDIR=\""$(localedir)"\"\
+  -I$(top_srcdir)/src/get/\
   -I$(top_srcdir)/src/input/\
   -I$(top_srcdir)/src/opts/\
   -I$(top_srcdir)/src/pbar/\
@@ -29,6 +30,7 @@ quvi_LDFLAGS=\
   $(AM_LDFLAGS)
 
 quvi_LDADD=\
+  $(top_builddir)/src/get/libget.la\
   $(top_builddir)/src/input/libinput.la\
   $(top_builddir)/src/opts/libopts.la\
   $(top_builddir)/src/pbar/libpbar.la\
