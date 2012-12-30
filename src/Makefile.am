@@ -3,11 +3,13 @@ SUBDIRS=get input pbar print opts util
 src=\
   main.c\
   opts.c\
+  setup.c\
   status.c
 
 hdr=\
   cmd.h\
-  opts.h
+  opts.h\
+  setup.h
 
 bin_PROGRAMS=quvi
 quvi_SOURCES=$(src) $(hdr)
