@@ -4,6 +4,7 @@ src=\
   builtin/dump.c\
   builtin/get.c\
   builtin/info.c\
+  builtin/scan.c\
   main.c\
   opts.c\
   setup.c\
