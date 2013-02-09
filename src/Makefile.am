@@ -1,6 +1,7 @@
 SUBDIRS=get input pbar print opts util
 
 src=\
+  builtin/info.c\
   main.c\
   opts.c\
   setup.c\
