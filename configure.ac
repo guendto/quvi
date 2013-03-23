@@ -68,7 +68,8 @@ AC_CHECK_HEADERS([locale.h])
 # Checks for typedefs, structures, and compiler characteristics.
 
 # Checks for library functions.
-AC_CHECK_FUNCS([setlocale])
+AC_CHECK_FUNCS([setlocale memset strerror])
+AC_FUNC_STRERROR_R
 
 # Version.
 VN=`$srcdir/gen-ver.sh`
@@ -86,6 +87,12 @@ AC_CONFIG_FILES([
   Makefile
   doc/Makefile
   doc/man1/Makefile
+  src/get/Makefile
+  src/input/Makefile
+  src/opts/Makefile
+  src/pbar/Makefile
+  src/print/Makefile
+  src/util/Makefile
   src/Makefile
   po/Makefile.in
 ])

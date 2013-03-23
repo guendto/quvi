@@ -1,15 +1,31 @@
-SUBDIRS=
+SUBDIRS=get input pbar print opts util
 
 src=\
-  main.c
+  builtin/dump.c\
+  builtin/get.c\
+  builtin/info.c\
+  builtin/scan.c\
+  main.c\
+  opts.c\
+  setup.c\
+  status.c
 
-hdr=
+hdr=\
+  cmd.h\
+  opts.h\
+  setup.h
 
 bin_PROGRAMS=quvi
 quvi_SOURCES=$(src) $(hdr)
 
 quvi_CPPFLAGS=\
   -DLOCALEDIR=\""$(localedir)"\"\
+  -I$(top_srcdir)/src/get/\
+  -I$(top_srcdir)/src/input/\
+  -I$(top_srcdir)/src/opts/\
+  -I$(top_srcdir)/src/pbar/\
+  -I$(top_srcdir)/src/print/\
+  -I$(top_srcdir)/src/util/\
   -I$(top_srcdir)/src/\
   $(libquvi_CFLAGS)\
   $(libcurl_CFLAGS)\
@@ -24,6 +40,12 @@ quvi_LDFLAGS=\
   $(AM_LDFLAGS)
 
 quvi_LDADD=\
+  $(top_builddir)/src/get/libget.la\
+  $(top_builddir)/src/input/libinput.la\
+  $(top_builddir)/src/opts/libopts.la\
+  $(top_builddir)/src/pbar/libpbar.la\
+  $(top_builddir)/src/print/libprint.la\
+  $(top_builddir)/src/util/libutil.la\
   $(libquvi_LIBS)\
   $(libcurl_LIBS)\
   $(gobject_LIBS)\
