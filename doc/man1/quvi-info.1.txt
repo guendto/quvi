@@ -1,0 +1,74 @@
+quvi-info(1)
+============
+
+NAME
+----
+quvi-info - The daft information tool
+
+SYNOPSIS
+--------
+[verse]
+'quvi info' [OPTIONS]
+
+DESCRIPTION
+-----------
+This command shows information about the quvi suite.
+
+DEFAULT BEHAVIOUR
+-----------------
+The command will print information about the installed libquvi media
+scripts.
+
+OPTIONS
+-------
+
+-E, --print-subtitle-export-formats::
+  Print the available export formats for the media subtitles. The
+  current selection is provided by linkman:libquvi-scripts[7].
+
+-D, --print-media-domains::
+  Print the supported media domains. The current selection is provided
+  by linkman:libquvi-scripts[7].
+
+-V, --print-config-values::
+  Print the value of all configuration options.
+
+-P, --print-config-paths::
+  Print the quvirc search paths. See also linkman:quvirc[5] for notes.
+
+-p, --script-property PROPERTY::
+  Print the specified script property. PROPERTY may be one of the
+  following values:
+  * 'export.format' - subtitle export scripts only
+  * 'filepath'      - all scripts
+  * 'filename'      - all scripts
+  * 'domains'       - {playlist,subtitle,media} scripts
+  * 'sha1'          - all scripts
+
+NOTE: This option may be specified multiple times
+
+-t, --script-type TYPE::
+  Select the script type. TYPE may be one of the following values:
+  * 'subtitle.export' - media subtitle export scripts
+  * 'subtitle'        - media subtitle extraction scripts
+  * 'playlist'        - media playlist scripts
+  * 'media'           - media scripts
+  * 'scan'            - embedded media URL scan scripts
+
+include::common.txt[]
+
+EXAMPLES
+--------
+* Print the supported media domains:
++
+----
+$ quvi info -D
+----
+
+* Print information about playlist scripts:
++
+----
+$ quvi info -t playlist -p domains -p sha1
+----
+
+include::footer.txt[]
