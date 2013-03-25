@@ -1,0 +1,66 @@
+quvi(1)
+=======
+
+NAME
+----
+quvi - The silly suite to access the flash media stream properties
+
+SYNOPSIS
+--------
+[verse]
+'quvi' [--version|--help] COMMAND [ARGS]
+
+DESCRIPTION
+-----------
+quvi is a Free Software suite to access the flash media stream
+properties. It can parse flash media streams from a variety of websites
+including YouTube, Vimeo and DailyMotion.
+    
+You can use the suite to parse media stream properties, copy media
+streams to local files, scan URLs for embedded media URLs and load
+entire playlists.
+
+The functionality of quvi is typically utilized from the command
+line, or you can use the features from programs using the C API.
+
+quvi includes a number of commands. In the paragraph below, you
+will find a brief description for each command line utility.
+
+linkman:quvi-dump[1]::
+  Print {media,playlist,subtitle} properties in different
+  data-interchangeable formats, e.g. json or xml.
+
+linkman:quvi-get[1]::
+  Save a media stream to a file.
+
+linkman:quvi-info[1]::
+  Inspect the configuration and the script properties.
+
+linkman:quvi-scan[1]::
+  Scan an URL for embedded media URLs.
+
+CONFIGURATION
+-------------
+See linkman:quvirc[5] for more information about the groups and the
+variables that quvi parses.
+
+ENVIRONMENT
+-----------
+
+QUVI_SHOW_CONFIG::
+  If defined, the program will output information about the process of
+  parsing the configuration files.
+
+QUVI_CONFIG::
+  Full path of the quvirc file to read. If defined, the program will
+  parse only the specified file, skipping the search of other default
+  paths for the configuration file.
+
+See also linkman:libquvi[3] for the other supported environment
+variables.
+
+SEE ALSO
+--------
+linkman:quvirc[5], linkman:libquvi[3]
+
+include::../footer.txt[]
