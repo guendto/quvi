@@ -1,0 +1,10 @@
+-b, --verbosity LEVEL (default: verbose)::
+  Specify the verbosity level of the command. LEVEL may be:
+  - 'debug'   - verbose + enable verbose output for libcurl (CURLOPT_VERBOSE)
+  - 'verbose' - default
+  - 'quiet'   - errors only
+  - 'mute'    - nothing at all
+
++
+config: core.verbosity
+
