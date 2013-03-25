@@ -1,0 +1,58 @@
+quvi-scan(1)
+============
+
+NAME
+----
+quvi-scan - The dumbed-down embedded media URL scanner
+
+SYNOPSIS
+--------
+[verse]
+'quvi scan' [OPTIONS] [ARGS]
+
+DESCRIPTION
+-----------
+This command scans the input URLs for embedded media URLs and prints
+them to the stdout. The support is determined by the current selection
+of linkman:libquvi-scripts[7].
+
+DEFAULT BEHAVIOUR
+-----------------
+The contents of the URL are passed the the linkman:libquvi-scripts[7]
+which will then scan for the embedded media URLs. By default, the found
+media URLs are printed in the "rfc2483" format.  The '--print-format'
+may be used to change the default behaviour.
+
+include::common.txt[]
+include::input.txt[]
+
+OPTIONS
+-------
+
+Core
+~~~~
+
+include::opts-core-print-format.txt[]
+
+NOTE: See also DEFAULT BEHAVIOUR
+
+  config: core.print-format
+
+include::opts-core-verbosity.txt[]
+include::opts-http.txt[]
+
+EXAMPLES
+--------
+* Scan and print the media URLs in XML:
++
+----
+$ quvi -p xml scan URL
+----
+
+* Scan URL and extract the media:
++
+----
+$ quvi scan URL | quvi get
+----
+
+include::footer.txt[]
