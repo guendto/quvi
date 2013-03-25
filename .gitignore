@@ -24,7 +24,7 @@ config.h.in
 configure
 doc/Makefile.in
 doc/man1/Makefile.in
-doc/man1/quvi.1
+doc/man5/Makefile.in
 src/Makefile.in
 src/get/Makefile.in
 src/input/Makefile.in
