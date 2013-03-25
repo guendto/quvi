@@ -1,0 +1,53 @@
+// options: common: core
+
+Core
+~~~~
+
+-o, --check-mode-offline::
+  Do not resolve URL redirections before passing the URL to the
+  linkman:libquvi-scripts[7] to determine whether the URL is accepted by
+  any of the scripts.
+  +
+  config: core.check-mode-offline=<boolean>
+
+-B, --print-subtitles::
+  Query and print the available media subtitles. See also
+  '--print-format'.
+
+-S, --print-streams::
+  Query and print the available media streams. See also
+  '--print-format'.
+
+-l, --subtitle-language PATTERN[,PATTERN,...]::
+  Match a subtitle language using a regex PATTERN. The value may be a
+  comma-separated list of regex PATTERNs (left-to-right order) that
+  are matched against the available selection.
+  +
+  The value may also contain the reserved keyword 'croak' which will
+  cause linkman:libquvi[3] to exit with an error when reached.
+
+NOTE: The first available subtitle language will be chosen if nothing
+      matched the PATTERN
+
+  config: core.subtitle-language=PATTERN[,PATTERN,...]
+
+-s, --stream PATTERN[,PATTERN,...]::
+  Match a stream using a regex PATTERN. The value may be a
+  comma-separated list of regex PATTERNs (left-to-right order) that
+  are matched against the available selection.
+  +
+The value may contain the following reserved keywords:
++
+- 'croak' - instructs linkman:libquvi[3] to exit with an error when reached
+- 'best'  - instructs linkman:libquvi[3] to choose the best quality stream
+
++
+The 'best' quality is determined by the linkman:libquvi-scripts[7] by
+comparing the media quality properties, e.g. the video height property,
+although the actual method may vary depending on the data provided by
+the media hosting service.
+
+NOTE: The first available stream is selected if nothing matched
+
+  config: core.stream=PATTERN[,PATTERN,...]
+
