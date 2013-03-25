@@ -1,10 +1,12 @@
 MAN1_TXT=\
   quvi.1.txt\
-  quvi-dump.1.txt
+  quvi-dump.1.txt\
+  quvi-get.1.txt
 
 DOC_MAN1=\
   quvi.1\
-  quvi-dump.1
+  quvi-dump.1\
+  quvi-get.1
 
 MAN_TXT=$(MAN1_TXT)
 
