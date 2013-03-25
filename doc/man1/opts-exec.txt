@@ -1,0 +1,40 @@
+// options: common: exec
+
+Exec
+~~~~
+
+-A, --exec-dump-argv::
+  Print the argument array used to execute the child program.
+  +
+  config: exec.dump-argv=<boolean>
+
+-E, --exec-enable-stderr::
+  Do not discard child program's standard error.
+  +
+  config: exec.enable-stderr=<boolean>
+
+-O, --exec-enable-stdout::
+  Do not discard child program's standard output.
+  +
+  config: exec.enable-stdout=<boolean>
+
+-e, --exec COMMAND::
+  Execute a child program asynchoronously after parsing the media
+  properties. COMMAND may contain any of the following property
+  sequences. Each occurence will be replaced by the command before the
+  COMMAND is executed:
++
+  %s  Media property: start time (ms)
+  %T  Media property: thumbnail URL
+  %d  Media property: duration (ms)
+  %u  Media stream property: URL
+  %I  Media stream property: ID
+  %t  Media property: title
+  %i  Media property: ID
+  %f  Path to the saved media file - linkman:quvi-get(1) only
++
+This option may be specified multiple times. In the quvirc file, specify
+the commands in a comma-separated list.
++
+config: exec.external=COMMAND[,COMMAND,...]
+

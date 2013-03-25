@@ -1,0 +1,10 @@
+HTTP
+~~~~
+
+-u, --user-agent USERAGENT  (default: Mozilla/5.0)::
+  Identify as USERAGENT to the HTTP server.
+
+NOTE: linkman:libquvi-scripts[7] may override this value
+
+  config: http.user-agent
+

@@ -1,0 +1,9 @@
+-p, --print-format FORMAT  (default: varies)::
+  Specify the format in which the properties should be printed. The
+  command uses a different default value for this, depending on the
+  input URL. FORMAT may be one of the following values:
+  - 'enum'
+  - 'json'    - available only if quvi was built with JsonGLib
+  - 'rfc2483'
+  - 'xml'     - available only if quvi was built with libxml
+
