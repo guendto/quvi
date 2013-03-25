@@ -1,0 +1,102 @@
+quvirc(5)
+=========
+
+NAME
+----
+quvirc - The simple configuration file for the quvi program
+
+DESCRIPTION
+-----------
+A quvi configuration file consists of groups of key-value pairs similar
+to the so called .ini-like configuration files. quvi uses the GLib to
+parse the configuration. GLib refers to these files as 'key files', for
+lack of a better name.
+
+The lines beginning with a '#' are considered as comments. You can
+annotate your configuration file using this character. All text after
+the comment character to the end of the line is ignored.
+
+GKeyFile has some limitations that should be considered when you use a
+configuration file to configure quvi.
+
+Multiple keys::
+  Each group in each configuration file may contain the same key
+  multiple times, note however that the last key value replaces the
+  previously defined value.
+
+Multiple groups::
+  Configuration files may contain multiple groups with the same file,
+  they are however, merged together.
+
+The syntax of the configuration file is described in detail in the
+Desktop Entry Specification at
+http://freedesktop.org/Standards/desktop-entry-spec
+
+GKeyFile is described in detail in the GLib reference documentation at
+http://developer.gnome.org/glib/stable/glib-Key-value-file-parser.html
+
+PATHS
+-----
+The program will by default search the quvirc file from the typical
+configuration file paths. These paths (order and location) are
+determined by GLib, based on how it was configured.
+
+* Print the search paths:
++
+----
+$ quvi info --print-config-paths
+/usr/share/gnome/quvi/quvirc
+/usr/share/gdm/quvi/quvirc
+/usr/local/share/quvi/quvirc
+/usr/share/quvi/quvirc
+/home/legatvs/.local/share/quvi/quvirc
+/home/legatvs/.config/quvi/quvirc
+----
+
+Each of the same group variable value read from another quvirc
+replaces the current value. For example:
+
+----
+~/.local/share/quvi/quvirc
+[core]
+stream = foo
+
+~/.config/quvi/quvirc
+[core]
+stream = bar
+----
+
+The program would use "bar" as the core.stream value.
+
+EXAMPLES
+--------
+A given quvirc could look like:
+
+----
+[core]
+check-mode-offline = true
+print-format = json
+subtitle-language = cc_en,tts_en
+stream = 480p,720p,best
+#verbosity = debug
+
+[dump]
+query-metainfo = true
+
+[exec]
+enable-stdout = true
+external = echo %t,mplayer %u
+
+[get]
+output-regex = %t:/\\w|\\s/,%t:s/\\s\\s+/ /
+output-name = %t_%i.%e
+resume-from = -1
+throttle = 500
+----
+
+SEE ALSO
+--------
+linkman:quvi-info[1], linkman:quvi-dump[1], linkman:quvi-get[1],
+linkman:quvi-scan[1]
+
+include::../footer.txt[]

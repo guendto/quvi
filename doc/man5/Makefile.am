@@ -1,5 +1,5 @@
-MAN5_TXT=
-DOC_MAN5=
+MAN5_TXT=quvirc.5.txt
+DOC_MAN5=quvirc.5
 
 MAN_TXT=$(MAN5_TXT)
 
