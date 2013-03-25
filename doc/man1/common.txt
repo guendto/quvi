@@ -1,0 +1,12 @@
+// common features/notes shared between the commands.
+
+SUPPORT
+-------
+The support for the media hosts is determined by the current selection
+of linkman:libquvi-scripts[7].
+
+CONFIGURATION
+-------------
+See linkman:quvirc[5] for more information about the groups and the
+variables that quvi parses.
+
