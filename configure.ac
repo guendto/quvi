@@ -91,6 +91,7 @@ AC_CONFIG_FILES([
   Makefile
   doc/Makefile
   doc/man1/Makefile
+  doc/man5/Makefile
   src/get/Makefile
   src/input/Makefile
   src/opts/Makefile
