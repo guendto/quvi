@@ -332,6 +332,7 @@ static gint _setup_curl()
           o = fo.result.initial_bytes;
         }
       curl_easy_setopt(c, CURLOPT_RESUME_FROM_LARGE, (curl_off_t) o);
+      pbar->initial_bytes = o;
     }
 
   /*
