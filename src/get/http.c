@@ -376,16 +376,16 @@ static gint _open_stream()
     }
 
   pbar = lpbar_new();
+  r = _setup_curl();
 
-  if (_setup_curl() != EXIT_SUCCESS)
-    return (EXIT_FAILURE);
-
-  curl_code = curl_easy_perform(c);
-  r = _chk_transfer_errors(c);
+  if (r == EXIT_SUCCESS)
+    {
+      curl_code = curl_easy_perform(c);
+      r = _chk_transfer_errors(c);
+      _reset_curl();
+    }
 
   pbar->flags.failed = (r != EXIT_SUCCESS) ? TRUE:FALSE;
-  _reset_curl();
-
   return (r);
 }
 
