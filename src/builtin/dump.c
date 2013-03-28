@@ -263,7 +263,7 @@ static void _foreach_subtitle_url(gpointer p, gpointer userdata,
              : "default"; /* Assumes nothing matches this in the array. */
 
       qps->exit_status =
-        lutil_choose_subtitle(qps->q, qsub, lang, qps->xperr, &l);
+        lutil_choose_subtitle(qps->q, qsub, lang, qps->xperr, &l, TRUE);
 
       if (qps->exit_status != EXIT_SUCCESS)
         return;

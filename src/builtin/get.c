@@ -106,6 +106,8 @@ static GSList *_subtitle_languages(quvi_subtitle_t qsub)
   const gchar *s;
   GSList *r;
 
+  g_assert(qsub != NULL);
+
   r = NULL;
   while ( (t = quvi_subtitle_type_next(qsub)) != NULL)
     {
@@ -166,7 +168,7 @@ static void _dump_languages(quvi_subtitle_t qsub)
   l = _subtitle_languages(qsub);
   s = _str_list_to_s(l, "%10s  ", 6);
 
-  g_print(_("subtitles (found):\n  %s\n"), s);
+  g_print(_("subtitles (found):\n  %s\n"), (strlen(s) ==0) ? _("none"):s);
 
   lutil_slist_free_full(l, (GFunc) g_free);
   g_free(s);
@@ -192,22 +194,23 @@ static gint _copy_subtitle(const gchar *mfpath, const gchar *url,
   _dump_languages(qsub);
 
   r = lutil_choose_subtitle(q, qsub, opts.core.subtitle_language,
-                            xperr, &ql);
-#ifdef _1
-  ql = quvi_subtitle_select(qsub, opts.core.subtitle_language);
-  r = EXIT_FAILURE;
-#endif
+                            xperr, &ql, FALSE);
   if (r == EXIT_SUCCESS)
     {
-      quvi_subtitle_export_t qse;
+      if (ql != NULL)
+        {
+          quvi_subtitle_export_t qse;
 
-      qse = quvi_subtitle_export_new(ql, opts.core.subtitle_export_format);
-      if (quvi_ok(q) == TRUE)
-        r = _write_subtitle(ql, qse, mfpath, xperr);
+          qse = quvi_subtitle_export_new(ql, opts.core.subtitle_export_format);
+          if (quvi_ok(q) == TRUE)
+            r = _write_subtitle(ql, qse, mfpath, xperr);
+          else
+            xperr(_("libquvi: while exporting subtitle: %s"), quvi_errmsg(q));
+
+          quvi_subtitle_export_free(qse);
+        }
       else
-        xperr(_("libquvi: while exporting subtitle: %s"), quvi_errmsg(q));
-
-      quvi_subtitle_export_free(qse);
+        g_print(_("skip: subtitle extraction\n"));
     }
   quvi_subtitle_free(qsub);
 

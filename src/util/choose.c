@@ -47,7 +47,8 @@ gint lutil_choose_stream(const quvi_t q, const quvi_media_t qm,
 /* Choose subtitle language from the available languages. */
 gint lutil_choose_subtitle(const quvi_t q, const quvi_subtitle_t qsub,
                            const gchar *lang, const lutil_cb_printerr xperr,
-                           quvi_subtitle_lang_t *l)
+                           quvi_subtitle_lang_t *l,
+                           const gboolean fail_if_none)
 {
   g_assert(xperr != NULL);
   g_assert(lang != NULL);
@@ -60,7 +61,15 @@ gint lutil_choose_subtitle(const quvi_t q, const quvi_subtitle_t qsub,
       xperr(_("libquvi: while selecting subtitle: %s"), quvi_errmsg(q));
       return (EXIT_FAILURE);
     }
-  return (EXIT_SUCCESS);
+  else
+    {
+      if (*l == NULL && fail_if_none == TRUE)
+        {
+          xperr(_("libquvi: failed to find any subtitles"));
+          return (EXIT_FAILURE);
+        }
+      return (EXIT_SUCCESS);
+    }
 }
 
 /* vim: set ts=2 sw=2 tw=72 expandtab: */

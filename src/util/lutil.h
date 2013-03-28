@@ -245,7 +245,8 @@ gint lutil_choose_stream(const gpointer, const gpointer, const gchar*,
                          const lutil_cb_printerr);
 
 gint lutil_choose_subtitle(const gpointer, const gpointer, const gchar*,
-                           const lutil_cb_printerr, gpointer*);
+                           const lutil_cb_printerr, gpointer*,
+                           const gboolean);
 
 gint lutil_query_metainfo(gpointer, gpointer, gpointer*, lutil_cb_printerr);
 
