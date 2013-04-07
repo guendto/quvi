@@ -294,7 +294,7 @@ static gint _mi_attr_s(const xml_t p, const quvi_http_metainfo_t qmi,
   } while (0)
 
 static gint _mi_attr_d(const xml_t p, const quvi_http_metainfo_t qmi,
-                       const QuviMediaProperty qmip, const gchar *n)
+                       const QuviHTTPMetaInfoProperty qmip, const gchar *n)
 {
   gdouble d = 0;
   quvi_http_metainfo_get(qmi, qmip, &d);
