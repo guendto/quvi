@@ -3,7 +3,7 @@
 # quvi
 # Copyright (C) 2012  Toni Gundogdu <legatvs@gmail.com>
 #
-# This file is part of libquvi <http://quvi.sourceforge.net/>.
+# This file is part of quvi <http://quvi.sourceforge.net/>.
 #
 # This program is free software: you can redistribute it and/or
 # modify it under the terms of the GNU Affero General Public
@@ -19,52 +19,46 @@
 # Public License along with this program.  If not, see
 # <http://www.gnu.org/licenses/>.
 #
-dir=`dirname $0`
-o=
-# flags:
-c= # strip off the 'v' prefix
+set -e
 
-# VERSION file is part of the dist tarball.
-from_VERSION_file()
-{
-  o=`cat "$dir/VERSION" 2>/dev/null`
-}
+source=.gitignore
+cachedir=autom4te.cache
 
-from_git_describe()
+cleanup()
 {
-  [ -d "$dir/.git" -o -f "$dir/.git" ] && {
-    o=`git describe --match "v[0-9]*" --abbrev=4 HEAD 2>/dev/null`
-  }
-}
-
-dump_vn()
-{
-  [ -n "$c" ] && o=${o#v} # strip off the 'v' prefix.
-  echo $o
+  echo "WARNING
+This will remove the files specified in the $source file. This will also
+remove the $cachedir/ directory with all of its contents.
+  Bail out now (^C) or hit enter to continue."
+  read n1
+  [ -f Makefile ] && make distclean
+  for file in `cat $source`; do # Remove files only.
+    [ -e "$file" ] && [ -f "$file" ] && rm -f "$file"
+  done
+  [ -e "$cachedir" ] && rm -rf "$cachedir"
+  rmdir -p config.aux 2>/dev/null
   exit 0
 }
 
 help()
 {
-  echo "$0 [OPTIONS]
+  echo "Usage: $0 [-c|-h]
 -h  Show this help and exit
--c  Strip off the 'v' prefix from the output"
+-c  Make the source tree 'maintainer clean'
+Run without options to (re)generate the configuration files."
   exit 0
 }
 
 while [ $# -gt 0 ]
 do
   case "$1" in
-    -c) c=1;;
+    -c) cleanup;;
     -h) help;;
-     *) break;;
+    *) break;;
   esac
   shift
 done
 
-from_VERSION_file
-[ -z "$o" ] && from_git_describe
-[ -n "$o" ] && dump_vn
-exit 1
-
-# vim: set ts=2 sw=2 tw=72 expandtab:
+mkdir -p m4
+echo "Generate configuration files..."
+autoreconf -if && echo "You can now run 'configure'"

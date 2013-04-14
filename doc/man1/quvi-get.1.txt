@@ -1,0 +1,200 @@
+quvi-get(1)
+============
+
+NAME
+----
+quvi-get - The vilified media stream extraction tool
+
+SYNOPSIS
+--------
+[verse]
+'quvi get' [OPTIONS] [ARGS]
+
+DESCRIPTION
+-----------
+This command saves the media stream to a file.
+
+DEFAULT BEHAVIOUR
+-----------------
+The command will attempt to determine if any of the
+linkman:libquvi-scripts[7] accept the input URL before exiting with an
+error. The script type {playlist,media,...} determines how the command
+will handle the input URL.
+
+Playlist URLs::
+  The entire playlist of media URLs will be extracted.
+
+Media URLs::
+  The media will be extracted.
+
+include::common.txt[]
+include::input.txt[]
+
+OPTIONS
+-------
+
+include::opts-core.txt[]
+
+-L, --subtitle-export-format FORMAT  (default: srt)::
+  Export the subtitle language to the specified FORMAT. The available
+  FORMATs are determined by the current selection of the subtitle export
+  'libquvi-scripts(7)'.
+  +
+  config: core.subtitle-export-format
+
+include::opts-core-verbosity.txt[]
+include::opts-exec.txt[]
+
+Get
+~~~
+
+-w, --overwrite::
+  Overwrite the existing file.
+
+-g, --output-regex PATTERN  (default: multiple)::
+  Apply regex PATTERN against a media property. Matches/replaces all
+  occurences (similar to the "g" modifier of Perl).
+  +
+The syntax is similar to Perl-syntax except that this option expects a
+leading "property sequence" that indicates the media property to match
+against (e.g. %t:s/foo/bar/i).
++
+The following operation modes are supported:
++
+- 'm//'  - match operation ('m' is optional)
+- 's///' - substitution operation
+
++
+For the list of the supported "property sequences", see `exec.external`.
+Both options use the same sequences to identify the media properties.
++
+The following PATTERNS are used by default:
++
+----
+%t:/\\w|\\s/
+%t:s/\\s\\s+/ /
+%t:s/^\\s+//
+%t:s/\\s+$//
+----
++
+The default PATTERNS are used to cleanup the media title property value
+before it will be used to generate the file name for the saved media
+stream.
++
+This option may be specified multiple times. In the quvirc file, specify
+the PATTERNs in a comma-separated list.
++
+config: get.output-regex=PATTERN[,PATTERN,...]
+
+-f, --output-file FILE::
+  Write the media to the specified FILE.
+
+-n, --output-name FORMAT  (default: "%t.%e")::
+  Specify the file name FORMAT. This value determines how the saved
+  media files will be named. All occurences of the supported media
+  property sequences will be replaced.  See '--exec' for a complete list
+  of supported "property sequences".
+  +
+  config: get.output-name
+
+-i, --output-dir DIR  (default: cwd)::
+  Write the saved media to the DIR.
+  +
+  config: get.output-dir
+
+-r, --resume-from OFFSET  (default: 0)::
+  Specify the offset from which the transfer should continue.  If this
+  value is 0 (default), the command will attempt to resume the transfers
+  automatically. If the value is >0, the command will attempt to resume
+  the transfer from the specified offset.
++
+If the value is >=0, the command will send an HEAD request to the HTTP
+server to query the content-{type,length} values. These are used to
+build the output filename and to determine whether the transfer should
+be resumed; the content-length value is compared to the local file
+length to determine whether transfer should resume.
++
+Use of a negative value (<0) will cause the command to disable resuming
+completely causing the command to 'skip' the step that sends the HEAD
+request to the HTTP server, and start the transfer from the 0 offset,
+and effectively, _overwriting_ the existing file. The
+content-{type,length} values are parsed from the returned HTTP GET
+response, instead.
++
+Technical: libcurl requires setting CURLOPT_RESUME_FROM_LARGE before
+`curl_easy_perform' is called. The the command has no way of knowing
+whether the transfer should be resumed if `content-length' is not
+queried by sending a HTTP HEAD request before the transfer begins. A
+possible workaround is to specify from which offset the transfer should
+continue, but this requires that the user determines the value by hand.
+  +
+  config: get.resume-from
+
+-k, --skip-transfer::
+  Do not save the media.
+  +
+  config: get.skip-transfer=<boolean>
+
+-t, --throttle RATE  (default: 0)::
+  Do not exceed the transfer RATE (Ki/s). Setting this value to 0
+  disables the throttle. This setting affects only the saving process of
+  the media stream.
+  +
+  config: get.throttle
+
+include::opts-http.txt[]
+
+EXAMPLES
+--------
+* Save the stream:
++
+----
+$ quvi get MEDIA_URL
+----
+
+* Dump the available streams:
++
+----
+$ quvi get -S MEDIA_URL
+----
+
+* Save the selected stream:
++
+----
+$ quvi get -s foo MEDIA_URL
+----
+
+* Similar to the above but choose the stream "baz" if "foo" is not
+  available:
++
+----
+$ quvi get -s foo,baz,best MEDIA_URL
+$ quvi get -s foo,baz,croak MEDIA_URL
+----
++
+The first will grab whatever is the best quality if neither ("foo" or
+"baz") stream is available. The use of "croak" keyword will cause the
+command to exit with an error if neither stream is available.
+
+* Dump the available subtitles:
++
+----
+$ quvi get -B MEDIA_URL
+----
+
+* Do not save the media stream, grab "cc_en" subtitles only:
++
+----
+$ quvi get -k -l cc_en,croak MEDIA_URL
+----
++
+Use of "croak" keyword will cause the command to exit with an error if
+"cc_en" subtitle was not available.
+
+* Watch the entire playlist using 'mplayer(1)':
++
+----
+$ quvi get -e "mplayer %f" PLAYLIST_URL
+----
+
+include::footer.txt[]

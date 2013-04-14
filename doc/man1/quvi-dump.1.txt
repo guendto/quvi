@@ -1,0 +1,104 @@
+quvi-dump(1)
+============
+
+NAME
+----
+quvi-dump - The dull-witted property printer
+
+SYNOPSIS
+--------
+[verse]
+'quvi dump' [OPTIONS] [ARGS]
+
+DESCRIPTION
+-----------
+This command queries the properties for an URL and prints them to
+the stdout.
+
+DEFAULT BEHAVIOUR
+-----------------
+The command will attempt to determine if any of the
+linkman:libquvi-scripts[7] accept the input URL before exiting with an
+error. The script type {playlist,media,...} determines how the command
+will handle the input URL.
+
+Playlist URLs::
+  The playlist properties (media URLs) are printed in the "rfc2483"
+  format.
+
+Media URLs::
+  The media properties will be printed in the "enum" format.
+
+Available {subtitles,streams}::
+  Printed in the "rfc2483" format.
+
+The '--print-format' may be used to change the default behaviour.
+
+include::common.txt[]
+include::input.txt[]
+
+OPTIONS
+-------
+
+include::opts-core.txt[]
+include::opts-core-print-format.txt[]
+include::opts-core-verbosity.txt[]
+
+NOTE: The default value varies, see DEFAULT BEHAVIOUR.
+
+  config: core.print-format
+
+Dump
+~~~~
+
+-q, --query-metainfo::
+  Instruct the command to query the HTTP metainfo properties, namely
+  Content-{Length,Type}. This will cause linkman:libquvi[3] to send an
+  HTTP HEAD request for each HTTP media stream URL and parse the
+  returned data.  When used, the command will include these properties
+  to the printed media properties.
+  +
+  config: dump.query-metainfo=<boolean>
+
+include::opts-exec.txt[]
+include::opts-http.txt[]
+
+EXAMPLES
+--------
+* Print media properties in XML:
++
+----
+$ quvi dump -p xml MEDIA_URL
+----
+
+* Execute a child program:
++
+----
+$ quvi dump -e "totem %u" MEDIA_URL
+----
+
+* Print playlist properties in JSON:
++
+----
+$ quvi dump -p json PLAYLIST_URL
+----
+
+* Print available subtitles in JSON:
++
+----
+$ quvi dump -p json -B MEDIA_URL
+----
+
+* Print available media streams:
++
+----
+$ quvi dump -S MEDIA_URL
+----
+
+* Query media properties for each playlist item:
++
+----
+$ quvi dump PLAYLIST_URL | quvi dump
+----
+
+include::footer.txt[]

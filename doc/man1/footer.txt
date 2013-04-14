@@ -1,0 +1,15 @@
+ENVIRONMENT
+-----------
+See linkman:quvi[1]
+
+EXIT STATUS
+-----------
+Either EXIT_SUCCESS or EXIT_FAILURE. The actual value depends on the
+platform, on POSIX systems they are 0 (success) and 1 (failure).
+
+SEE ALSO
+--------
+linkman:quvirc[5], linkman:libquvi[3]
+
+include::../footer.txt[]
+

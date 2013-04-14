@@ -1,16 +1,96 @@
-
-
 General
 =======
 
-quvi is a command line tool for parsing flash media stream URLs.
-It supports many websites including YouTube and Dailymotion.
+quvi is the command line tool for developing the libquvi scripts and
+parsing the media properties.
 
-Home  : <http://quvi.sourceforge.net/>
 gitweb: <http://repo.or.cz/w/quvi-tool.git>
+Home  : <http://quvi.sourceforge.net/>
+
+
+Installation
+============
+
+Notes
+-----
+
+  * This document does not cover how to use GNU Autotools for building
+and installing software, instead, refer to the GNU Autotools documentation,
+the INSTALL file and the "configure --help" output for more information.
+
+  * If you're not familiar with GNU Autotools and/or installing software
+from the source code, you may prefer to install quvi using a binary
+package, instead. You can find quvi packaged for many distros already.
+
+  * If you have previously installed quvi from the source code to your
+system, the recommended practice is to uninstall the previous installation
+first, before you continue with the new one. You would, typically, run
+"make uninstall" (as root if necessary) from the same directory you ran
+"make install" from.
+
+  * If you are building quvi from the git repository code, run the
+`bootstrap.sh' first. This generates the configuration files. See also
+the -h output for any additional info.
+
+
+Simple install procedure
+------------------------
+
+  % ./configure && make
+
+  [ Become root if necessary ]
+  % make install
+
+The configure script supports also the following options which are
+relevant to the installation:
+
+  --with(out)-manual
+
+    Install the manual page for quvi.
+
+Requirements
+------------
+
+* libquvi 0.9
+  http://quvi.sf.net/
+
+* libcurl 7.21.0
+  http://curl.haxx.se/
+
+* GLib 2.24.2
+  http://library.gnome.org/devel/glib/
+
+* JsonGlib 0.12
+  http://live.gnome.org/JsonGlib
+  NOTE: builds without: JSON output will be disabled
+
+* libxml 2.7.8
+  http://www.xmlsoft.org/
+  NOTE: builds without: XML output will be disabled
+
+* pkg-config for tracking the compilation flags needed for libraries
+  http://www.freedesktop.org/software/pkgconfig/
+
+* GNU gettext is recommended
+  http://www.gnu.org/software/gettext/
+
+* GNU make is recommended
+  http://www.gnu.org/software/make/
+
+
+How to report bugs
+==================
+
+Please see: http://quvi.sourceforge.net/#bugs
+
+
+Patches
+=======
+
+Please see: http://quvi.sourceforge.net/contrib/
 
 
 License
 =======
 
-quvi is free software, licensed under the LGPLv2.1+.
+quvi is Free Software, licensed under the GNU Affero GPLv3+.
