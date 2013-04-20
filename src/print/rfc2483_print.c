@@ -200,6 +200,21 @@ static gint _pp_s(const rfc2483_t p, const quvi_playlist_t qp,
       return (EXIT_FAILURE);\
   } while (0)
 
+static gint _pp_d(const rfc2483_t p, const quvi_playlist_t qp,
+                  const QuviPlaylistProperty qpp, const gchar *n,
+                  const gboolean c)
+{
+  gdouble d = 0;
+  quvi_playlist_get(qp, qpp, &d);
+  return (_print(p, UTIL_PROPERTY_TYPE_PLAYLIST, n, NULL, d, c));
+}
+
+#define _print_pp_d(n,c)\
+  do {\
+    if (_pp_d(p, qp, n, #n, c) != EXIT_SUCCESS)\
+      return (EXIT_FAILURE);\
+  } while (0)
+
 gint lprint_rfc2483_playlist_properties(quvi_playlist_t qp, gpointer data)
 {
   rfc2483_t p = (rfc2483_t) data;
@@ -208,9 +223,17 @@ gint lprint_rfc2483_playlist_properties(quvi_playlist_t qp, gpointer data)
   g_assert(qp != NULL);
 
   g_print(_("# Playlist media URLs\n#\n"));
+
+  _print_pp_s(QUVI_PLAYLIST_PROPERTY_TITLE, TRUE);
+  _print_pp_s(QUVI_PLAYLIST_PROPERTY_ID, TRUE);
+  _print_pp_s(QUVI_PLAYLIST_PROPERTY_THUMBNAIL_URL, TRUE);
+
+  g_print("#\n");
+
   while (quvi_playlist_media_next(qp) == QUVI_TRUE)
     {
       _print_pp_s(QUVI_PLAYLIST_MEDIA_PROPERTY_TITLE, TRUE);
+      _print_pp_d(QUVI_PLAYLIST_MEDIA_PROPERTY_DURATION_MS, TRUE);
       _print_pp_s(QUVI_PLAYLIST_MEDIA_PROPERTY_URL, FALSE);
     }
   return (EXIT_SUCCESS);
