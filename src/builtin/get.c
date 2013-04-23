@@ -265,8 +265,13 @@ static GSList *_media_streams(quvi_media_t qm)
   while (quvi_media_stream_next(qm) == QUVI_TRUE)
     {
       quvi_media_get(qm, QUVI_MEDIA_STREAM_PROPERTY_ID, &s);
-      r = g_slist_prepend(r, g_strdup(s));
+      if (strlen(s) >0)
+        r = g_slist_prepend(r, g_strdup(s));
     }
+
+  if (g_slist_length(r) ==0)
+    r = g_slist_prepend(r, g_strdup(_("default")));
+
   return (g_slist_reverse(r));
 }
 
