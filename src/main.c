@@ -135,19 +135,30 @@ static gint _cmd_help(gint argc, gchar **argv)
   return (EXIT_SUCCESS);
 }
 
+static const gchar copyr[] =
+  "Copyright (C) 2012,2013  Toni Gundogdu <legatvs@gmail.com>\n"
+  "quvi comes with ABSOLUTELY NO WARRANTY.  You may redistribute copies of\n"
+  "quvi under the terms of the GNU Affero General Public License version 3\n"
+  "or later. For more information, see "
+  "<http://www.gnu.org/licenses/agpl.html>.\n\n"
+  "To contact the developers, please mail to "
+  "<quvi-devel@lists.sourceforge.net>";
+
 static gint _cmd_version(gint argc, gchar **argv)
 {
-  g_print(_("quvi version %s\n  built on %s for %s\n"),
+  g_print("quvi version %s\n  built on %s for %s\n\n",
           PACKAGE_VERSION, BUILD_TIME, CANONICAL_TARGET);
 
-  g_print(_("libquvi version %s\n  built on %s for %s\n  configuration: %s\n"),
+  g_print("libquvi version %s\n  built on %s for %s\n  configuration: %s\n\n",
           quvi_version(QUVI_VERSION),
           quvi_version(QUVI_VERSION_BUILD_TIME),
           quvi_version(QUVI_VERSION_BUILD_TARGET),
           quvi_version(QUVI_VERSION_CONFIGURATION));
 
-  g_print(_("libquvi-scripts version %s\n"),
+  g_print("libquvi-scripts version %s\n\n",
           quvi_version(QUVI_VERSION_SCRIPTS));
+
+  g_printerr("%s\n", copyr);
 
   return (EXIT_SUCCESS);
 }
