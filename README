@@ -52,21 +52,26 @@ Requirements
 ------------
 
 * libquvi 0.9
-  http://quvi.sf.net/
+  http://quvi.sourceforge.net/
 
 * libcurl 7.21.0
   http://curl.haxx.se/
+    $ sudo aptitude install libcurl4-gnutls-dev
+       (or libcurl4-openssl-dev)
 
 * GLib 2.24.2
   http://library.gnome.org/devel/glib/
+    $ sudo aptitude install libglib2.0-dev
 
 * JsonGlib 0.12
   http://live.gnome.org/JsonGlib
   NOTE: builds without: JSON output will be disabled
+    $ sudo aptitude install libjson-glib-dev
 
 * libxml 2.7.8
   http://www.xmlsoft.org/
   NOTE: builds without: XML output will be disabled
+    $ sudo aptitude install libxml2-dev
 
 * pkg-config for tracking the compilation flags needed for libraries
   http://www.freedesktop.org/software/pkgconfig/
