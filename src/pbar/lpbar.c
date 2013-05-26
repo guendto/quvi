@@ -94,10 +94,10 @@ void lpbar_free(lpbar_t p)
 
 static const gchar *frames[] =
 {
-  "---=",
-  "--=-",
-  "-=--",
   "=---",
+  "-=--",
+  "--=-",
+  "---=",
   NULL
 };
 
