@@ -77,6 +77,21 @@ gint setup_quvi(quvi_t *q)
   return (r);
 }
 
+#define _reverse(p)\
+  do {\
+    if (p != NULL)\
+      p = g_slist_reverse(p);\
+  } while (0)
+
+static void _reverse_input_url_order(lutil_check_support_t css)
+{
+  _reverse(css->url.playlist);
+  _reverse(css->url.subtitle);
+  _reverse(css->url.media);
+}
+
+#undef _reverse
+
 gint setup_query(setup_query_t sq)
 {
   struct lutil_query_properties_s qps;
@@ -110,6 +125,12 @@ gint setup_query(setup_query_t sq)
       lutil_check_support_free(&css);
       return (css.exit_status);
     }
+
+  /*
+   * The "check support" facility prepends to the lists. Reverse the order
+   * to restore the input order.
+   */
+  _reverse_input_url_order(&css);
 
   /* query {playlist,media} properties. */
 
