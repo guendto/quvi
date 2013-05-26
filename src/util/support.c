@@ -50,18 +50,6 @@ static glong _support(const lutil_check_support_t css, const gchar *url,
   return (qc);
 }
 
-#define _reverse(p)\
-  do { p = g_slist_reverse(p); } while (0)
-
-static void _reverse_returned_urls(lutil_check_support_t css)
-{
-  _reverse(css->url.playlist);
-  _reverse(css->url.subtitle);
-  _reverse(css->url.media);
-}
-
-#undef _reverse
-
 static glong _chk(const lutil_check_support_t css, const gchar *url,
                   const QuviSupportsType qst, GSList **dst)
 {
@@ -142,7 +130,7 @@ retry:
         case QUVI_OK:
           css->exit_status = EXIT_SUCCESS;
         default:
-          return (_reverse_returned_urls(css));
+          return;
         case QUVI_ERROR_NO_SUPPORT:
           break;
         }
