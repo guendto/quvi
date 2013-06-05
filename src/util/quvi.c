@@ -32,7 +32,8 @@ gint lutil_quvi_init(quvi_t *q, lutil_net_opts_t o)
   *q = quvi_new();
   if (quvi_ok(*q) == QUVI_FALSE)
     {
-      g_printerr(_("error: while initializing libquvi: %s\n"),quvi_errmsg(q));
+      g_printerr(_("error: while initializing libquvi: %s\n"),
+                 quvi_errmsg(*q));
       return (EXIT_FAILURE);
     }
 
