@@ -441,14 +441,15 @@ gint lget_http_get(lget_t handle)
   transfer_skipped = FALSE;
 
   /*
-   * If file was retrieved completely already, lutil_open_file set
-   * 'skip_retrieved_already' flag, and return EXIT_FAILURE.
+   * If the media stream was retrieved completely already:
+   *  lutil_open_file will set the 'skip_retrieved_already' flag, and
+   *  return EXIT_FAILURE.
    */
   r = _open_stream();
   if (r == EXIT_SUCCESS || fo.result.skip_retrieved_already == TRUE)
     r = _exec_cmd();
 
-  /* If --skip-transfer was defined, the  */
+  /* --skip-transfer was specified. */
   if (transfer_skipped == TRUE)
     r = EXIT_SUCCESS;
 
