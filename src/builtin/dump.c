@@ -451,10 +451,7 @@ gint cmd_dump(gint argc, gchar **argv)
   sq.linput = &linput;
   sq.q = q;
 
-  if (setup_query(&sq) != EXIT_SUCCESS)
-    return (_cleanup(EXIT_FAILURE));
-
-  return (_cleanup(EXIT_SUCCESS));
+  return (_cleanup(setup_query(&sq)));
 }
 
 /* vim: set ts=2 sw=2 tw=72 expandtab: */
