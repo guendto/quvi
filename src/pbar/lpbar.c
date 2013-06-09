@@ -176,10 +176,9 @@ gint lpbar_update(lpbar_t p, gdouble dlnow)
         percent = 100;
     }
 
-  g_print("\r");
   g_print(_("copy: %s  %3.0f%%  %6.1f%s/s  %4s%s"),
           frame, percent, rate, rate_unit, eta,
-          (p->flags.done == TRUE) ? "\n":"");
+          (p->flags.done == TRUE) ? "\n":"\r");
 
   p->counters.last_update = elapsed;
   p->counters.count = dlnow;
