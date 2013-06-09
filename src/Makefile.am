@@ -8,12 +8,14 @@ src=\
   main.c\
   opts.c\
   setup.c\
+  sig.c\
   status.c
 
 hdr=\
   cmd.h\
   opts.h\
-  setup.h
+  setup.h\
+  sig.h
 
 bin_PROGRAMS=quvi
 quvi_SOURCES=$(src) $(hdr)
