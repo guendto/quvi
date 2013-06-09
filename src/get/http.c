@@ -246,9 +246,9 @@ static gint _chk_skipped()
   transfer_skipped = TRUE;
 
   if (fo.result.skip_retrieved_already == TRUE)
-    g_printerr(_("skip: stream retrieved completely already\n"));
+    g_printerr(_("skip <transfer>: stream retrieved completely already\n"));
   else if (force_skip_transfer == TRUE)
-    g_printerr(_("skip: requested\n"));
+    g_printerr(_("skip <transfer>: do not retrieve the media stream\n"));
   else
     transfer_skipped = FALSE;
 

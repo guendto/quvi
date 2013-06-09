@@ -212,7 +212,7 @@ static gint _copy_subtitle(const gchar *mfpath, const gchar *url,
           quvi_subtitle_export_free(qse);
         }
       else
-        g_print(_("skip: subtitle extraction\n"));
+        g_print(_("skip <transfer>: subtitle extraction\n"));
     }
   quvi_subtitle_free(qsub);
 
