@@ -112,14 +112,14 @@ static gint _cleanup(const gint r)
 
 static gint _print_unexpected_errmsg(const glong rc, const glong cc)
 {
-  g_printerr(_("\nerror: Server responded with code %ld, "
+  g_printerr(_("error: Server responded with code %ld, "
                "expected 200 or 206 (cc=%ld)\n"), rc, cc);
   return (EXIT_FAILURE);
 }
 
 static gint _print_curl_errmsg(const glong rc, const glong cc)
 {
-  g_printerr(_("\nerror: libcurl: %s (curl_code=%u, rc=%lu, cc=%lu)\n"),
+  g_printerr(_("error: libcurl: %s (curl_code=%u, rc=%lu, cc=%lu)\n"),
              curl_easy_strerror(curl_code), curl_code, rc, cc);
   return (EXIT_FAILURE);
 }
