@@ -358,20 +358,12 @@ static void _foreach_media_url(gpointer p, gpointer userdata,
       if (qps->exit_status != EXIT_SUCCESS)
         return;
 
-      qps->exit_status = media_properties(h);
-      if (qps->exit_status != EXIT_SUCCESS)
-        {
-          media_free(h);
-          return;
-        }
-
       /* Choose the stream, otherwise use the default. */
 
       if (opts.core.stream != NULL)
         {
           qps->exit_status = lutil_choose_stream(qps->q, qm, opts.core.stream,
                                                  qps->xperr);
-
           if (qps->exit_status != EXIT_SUCCESS)
             {
               media_free(h);
@@ -382,6 +374,16 @@ static void _foreach_media_url(gpointer p, gpointer userdata,
       /* Query HTTP metainfo (if at all). */
 
       qps->exit_status = _query_metainfo(qps, &qmi, qm);
+      if (qps->exit_status != EXIT_SUCCESS)
+        {
+          quvi_http_metainfo_free(qmi);
+          media_free(h);
+          return;
+        }
+
+      /* Dump the properties. */
+
+      qps->exit_status = media_properties(h);
       if (qps->exit_status == EXIT_SUCCESS)
         {
           qps->exit_status = media_stream_properties(qmi, h);
