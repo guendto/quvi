@@ -18,10 +18,12 @@ of linkman:libquvi-scripts[7].
 
 DEFAULT BEHAVIOUR
 -----------------
-The contents of the URL are passed the the linkman:libquvi-scripts[7]
-which will then scan for the embedded media URLs. By default, the found
-media URLs are printed in the "rfc2483" format.  The '--print-format'
-may be used to change the default behaviour.
+The command passes the contents of the specified URLs to the 'scan'
+scripts of the linkman:libquvi-scripts[7] which will then search the
+contents for embedded media URLs.
+
+By default, the command will print the found media URLs in the "rfc2483"
+format.  The '--print-format' may be used to change this.
 
 include::common.txt[]
 include::input.txt[]
