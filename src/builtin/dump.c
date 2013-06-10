@@ -31,8 +31,10 @@
 #include "lutil.h"
 #include "setup.h"
 #include "opts.h"
+#include "sig.h"
 #include "cmd.h"
 
+static struct sigaction saw, sao;
 static struct linput_s linput;
 static struct lopts_s lopts;
 extern struct opts_s opts;
@@ -399,6 +401,7 @@ static void _foreach_media_url(gpointer p, gpointer userdata,
 
 static gint _cleanup(const gint r)
 {
+  sigwinch_reset(&sao);
   linput_free(&linput);
   quvi_free(q);
   return (r);
@@ -450,6 +453,8 @@ gint cmd_dump(gint argc, gchar **argv)
 
   sq.linput = &linput;
   sq.q = q;
+
+  sigwinch_setup(&saw, &sao);
 
   return (_cleanup(setup_query(&sq)));
 }

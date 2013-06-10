@@ -30,6 +30,7 @@
 #include "lutil.h"
 #include "setup.h"
 #include "opts.h"
+#include "sig.h"
 #include "cmd.h"
 
 static gint exit_status = EXIT_SUCCESS;
@@ -37,6 +38,7 @@ static lutil_cb_printerr xperr = NULL;
 static GSList *media_urls = NULL;
 static quvi_t q = NULL;
 
+static struct sigaction saw, sao;
 static struct linput_s linput;
 static struct lopts_s lopts;
 extern struct opts_s opts;
@@ -114,6 +116,7 @@ static gint _cleanup()
   lutil_slist_free_full(media_urls, (GFunc) g_free);
   media_urls = NULL;
 
+  sigwinch_reset(&sao);
   linput_free(&linput);
   quvi_free(q);
 
@@ -133,6 +136,8 @@ gint cmd_scan(gint argc, gchar **argv)
       linput_free(&linput);
       return (EXIT_FAILURE);
     }
+
+  sigwinch_setup(&saw, &sao);
 
   xperr = lprint_enum_errmsg; /* rfc2483 uses this also. */
 
