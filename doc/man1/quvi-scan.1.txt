@@ -33,11 +33,6 @@ Core
 ~~~~
 
 include::opts-core-print-format.txt[]
-
-NOTE: See also DEFAULT BEHAVIOUR
-
-  config: core.print-format
-
 include::opts-core-verbosity.txt[]
 include::opts-http.txt[]
 

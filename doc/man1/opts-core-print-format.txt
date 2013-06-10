@@ -7,3 +7,7 @@
   - 'rfc2483'
   - 'xml'     - available only if quvi was built with libxml
 
+NOTE: The default value varies, see DEFAULT BEHAVIOUR.
+
+  config: core.print-format
+

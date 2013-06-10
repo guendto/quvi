@@ -44,10 +44,6 @@ include::opts-core.txt[]
 include::opts-core-print-format.txt[]
 include::opts-core-verbosity.txt[]
 
-NOTE: The default value varies, see DEFAULT BEHAVIOUR.
-
-  config: core.print-format
-
 Dump
 ~~~~
 
