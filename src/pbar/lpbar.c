@@ -64,6 +64,7 @@ lpbar_t lpbar_new()
 {
   lpbar_t p = g_new0(struct lpbar_s, 1);
   p->counters.timer = g_timer_new();
+  p->mode = write;
   return (p);
 }
 
@@ -187,7 +188,7 @@ gint lpbar_update(lpbar_t p, gdouble dlnow)
   return (0);
 }
 
-void lpbar_print(const lpbar_t p, const gboolean skip_transfer)
+void lpbar_print(const lpbar_t p)
 {
   const gchar *u;
   gdouble b;
@@ -201,11 +202,23 @@ void lpbar_print(const lpbar_t p, const gboolean skip_transfer)
   if (p->content_type != NULL)
     g_print(_("  content type: %s"), p->content_type);
 
-  if (skip_transfer == FALSE)
-    {
-      g_print(_("  mode: %s"),
-              (p->initial_bytes >0) ? _("resume"):_("write"));
-    }
+  g_print(C_("To indicate transfer mode (resumed, ...) ", "  mode: "));
+  switch (p->mode)
+  {
+    case retrieved_already:
+      g_print(C_("Transfer mode with a reason", "skip <retrieved already>"));
+      break;
+    case forced_skip:
+      g_print(C_("Transfer mode with a reason", "skip <forced>"));
+      break;
+    case resume:
+    case write:
+    default:
+      g_print("%s", (p->initial_bytes ==0)
+        ? C_("Transfer mode (begin at offset 0)", "write")
+        : C_("Transfer mode", "resume"));
+      break;
+  }
   g_print("\n");
 }
 

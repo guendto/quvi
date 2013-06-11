@@ -211,8 +211,6 @@ static gint _open_file()
   if (_build_fpath() != EXIT_SUCCESS)
     return (EXIT_FAILURE);
 
-  lpbar_print(pbar, force_skip_transfer);
-
   if (force_skip_transfer == TRUE)
     return (EXIT_FAILURE);
 
@@ -240,21 +238,26 @@ static gint _open_file()
   return (lutil_file_open(&fo));
 }
 
+/* Check if transfer was skipped for whatever reason. */
 static gint _chk_skipped()
 {
   pbar->flags.failed = TRUE; /* Do not print update line. */
-  transfer_skipped = TRUE;
+  transfer_skipped = TRUE; /* Default */
 
   if (fo.result.skip_retrieved_already == TRUE)
-    g_printerr(_("skip <transfer>: stream retrieved completely already\n"));
+    pbar->mode = retrieved_already;
   else if (force_skip_transfer == TRUE)
-    g_printerr(_("skip <transfer>: do not retrieve the media stream\n"));
+    pbar->mode = forced_skip;
   else
-    transfer_skipped = FALSE;
+    transfer_skipped = FALSE; /* An error (e.g. file open) occurred. */
+
+  if (transfer_skipped == TRUE)
+    lpbar_print(pbar);
 
   return (EXIT_FAILURE);
 }
 
+/* Open file when the transfer begins (--resume-from >0). */
 static gint _chk_file_open()
 {
   if (fo.result.file != NULL)
@@ -264,6 +267,8 @@ static gint _chk_file_open()
 
   if (_open_file() != EXIT_SUCCESS)
     return (_chk_skipped());
+
+  lpbar_print(pbar);
 
   return (EXIT_SUCCESS);
 }
@@ -334,6 +339,13 @@ static gint _setup_curl()
       curl_easy_setopt(c, CURLOPT_RESUME_FROM_LARGE, (curl_off_t) o);
       pbar->initial_bytes = o;
     }
+
+  /*
+   * The file was opened, not postponed to be opened in the write
+   * callback when the transfer begins (--resume-from >0).
+   */
+  if (fo.result.file != NULL)
+    lpbar_print(pbar);
 
   /*
    * Set the curl handle options _after_ metainfo has been retrieved.

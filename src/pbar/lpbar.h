@@ -21,11 +21,14 @@
 #ifndef lpbar_h
 #define lpbar_h
 
+typedef enum { retrieved_already, forced_skip, resume, write } lpbar_mode;
+
 struct lpbar_s
 {
   gdouble content_bytes; /* total media content length */
   gdouble initial_bytes; /* >0 if a resumed transfer */
   gchar *content_type;
+  lpbar_mode mode;
   gchar *fname;
   struct
   {
@@ -46,8 +49,8 @@ typedef struct lpbar_s *lpbar_t;
 lpbar_t lpbar_new();
 void lpbar_free(lpbar_t);
 
-void lpbar_print(const lpbar_t, const gboolean);
 gint lpbar_update(lpbar_t, gdouble);
+void lpbar_print(const lpbar_t);
 
 #endif /* lpbar_h */
 
