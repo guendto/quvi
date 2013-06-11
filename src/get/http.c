@@ -128,7 +128,7 @@ static gint _print_io_errmsg()
 {
   if (io_errmsg != NULL)
     {
-      g_printerr(_("\nerror: while writing to file: %s\n"), io_errmsg);
+      g_printerr(_("error: while writing to file: %s\n"), io_errmsg);
       g_free(io_errmsg);
     }
   return (EXIT_FAILURE);
