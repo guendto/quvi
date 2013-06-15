@@ -72,7 +72,7 @@ static gint _rfc2483_handle_free(gpointer data, const gint r)
 
 static gint _print(const rfc2483_t p, const lutilPropertyType pt,
                    const gchar *n, const gchar *s, const gdouble d,
-                   const gboolean comment_out)
+                   const gboolean comment_out, const gboolean escape)
 {
   const gchar *h;
   gint r;
@@ -85,9 +85,14 @@ static gint _print(const rfc2483_t p, const lutilPropertyType pt,
 
   if (s != NULL)
     {
-      gchar *e = g_uri_escape_string(s, NULL, TRUE);
-      g_print("%s%s\n", h, e);
-      g_free(e);
+      if (escape == TRUE)
+        {
+          gchar *e = g_uri_escape_string(s, NULL, TRUE);
+          g_print("%s%s\n", h, e);
+          g_free(e);
+        }
+      else
+        g_print("%s%s\n", h, s);
     }
   else
     g_print("%s%.0f\n", h, d);
@@ -116,16 +121,16 @@ gint lprint_rfc2483_media_print_buffer(gpointer data)
 typedef lprint_cb_errmsg cem;
 
 static gint _mp_s(const rfc2483_t p, const QuviMediaProperty qmp,
-                  const gchar *n, const gboolean c)
+                  const gchar *n, const gboolean c, const gboolean e)
 {
   gchar *s = NULL;
   quvi_media_get(p->qm, qmp, &s);
-  return (_print(p, UTIL_PROPERTY_TYPE_MEDIA, n, s, -1, c));
+  return (_print(p, UTIL_PROPERTY_TYPE_MEDIA, n, s, -1, c, e));
 }
 
-#define _print_mp_s(n,c)\
+#define _print_mp_s(n,c,e) /* c=commented-out, e=escaped */ \
   do {\
-    if (_mp_s(p, n, #n, c) != EXIT_SUCCESS)\
+    if (_mp_s(p, n, #n, c, e) != EXIT_SUCCESS)\
       return (EXIT_FAILURE);\
   } while (0)
 
@@ -137,8 +142,8 @@ lprint_rfc2483_media_stream_properties(quvi_http_metainfo_t qmi,
 
   g_assert(data != NULL);
 
-  _print_mp_s(QUVI_MEDIA_STREAM_PROPERTY_ID, TRUE);
-  _print_mp_s(QUVI_MEDIA_STREAM_PROPERTY_URL, FALSE);
+  _print_mp_s(QUVI_MEDIA_STREAM_PROPERTY_ID, TRUE, FALSE);
+  _print_mp_s(QUVI_MEDIA_STREAM_PROPERTY_URL, FALSE, TRUE);
 
   return (EXIT_SUCCESS);
 }
@@ -187,16 +192,16 @@ gint lprint_rfc2483_playlist_print_buffer(gpointer data)
 
 static gint _pp_s(const rfc2483_t p, const quvi_playlist_t qp,
                   const QuviPlaylistProperty qpp, const gchar *n,
-                  const gboolean c)
+                  const gboolean c, const gboolean e)
 {
   gchar *s = NULL;
   quvi_playlist_get(qp, qpp, &s);
-  return (_print(p, UTIL_PROPERTY_TYPE_PLAYLIST, n, s, -1, c));
+  return (_print(p, UTIL_PROPERTY_TYPE_PLAYLIST, n, s, -1, c, e));
 }
 
-#define _print_pp_s(n,c)\
+#define _print_pp_s(n,c,e) /* c=commented-out, e=escaped */ \
   do {\
-    if (_pp_s(p, qp, n, #n, c) != EXIT_SUCCESS)\
+    if (_pp_s(p, qp, n, #n, c, e) != EXIT_SUCCESS)\
       return (EXIT_FAILURE);\
   } while (0)
 
@@ -206,10 +211,10 @@ static gint _pp_d(const rfc2483_t p, const quvi_playlist_t qp,
 {
   gdouble d = 0;
   quvi_playlist_get(qp, qpp, &d);
-  return (_print(p, UTIL_PROPERTY_TYPE_PLAYLIST, n, NULL, d, c));
+  return (_print(p, UTIL_PROPERTY_TYPE_PLAYLIST, n, NULL, d, c, FALSE));
 }
 
-#define _print_pp_d(n,c)\
+#define _print_pp_d(n,c) /* c=commented-out */ \
   do {\
     if (_pp_d(p, qp, n, #n, c) != EXIT_SUCCESS)\
       return (EXIT_FAILURE);\
@@ -224,17 +229,17 @@ gint lprint_rfc2483_playlist_properties(quvi_playlist_t qp, gpointer data)
 
   g_print(_("# Playlist media URLs\n#\n"));
 
-  _print_pp_s(QUVI_PLAYLIST_PROPERTY_TITLE, TRUE);
-  _print_pp_s(QUVI_PLAYLIST_PROPERTY_ID, TRUE);
-  _print_pp_s(QUVI_PLAYLIST_PROPERTY_THUMBNAIL_URL, TRUE);
+  _print_pp_s(QUVI_PLAYLIST_PROPERTY_TITLE, TRUE, FALSE);
+  _print_pp_s(QUVI_PLAYLIST_PROPERTY_ID, TRUE, FALSE);
+  _print_pp_s(QUVI_PLAYLIST_PROPERTY_THUMBNAIL_URL, TRUE, FALSE);
 
   g_print("#\n");
 
   while (quvi_playlist_media_next(qp) == QUVI_TRUE)
     {
-      _print_pp_s(QUVI_PLAYLIST_MEDIA_PROPERTY_TITLE, TRUE);
+      _print_pp_s(QUVI_PLAYLIST_MEDIA_PROPERTY_TITLE, TRUE, FALSE);
       _print_pp_d(QUVI_PLAYLIST_MEDIA_PROPERTY_DURATION_MS, TRUE);
-      _print_pp_s(QUVI_PLAYLIST_MEDIA_PROPERTY_URL, FALSE);
+      _print_pp_s(QUVI_PLAYLIST_MEDIA_PROPERTY_URL, FALSE, TRUE);
     }
   return (EXIT_SUCCESS);
 }
@@ -297,16 +302,16 @@ gint lprint_rfc2483_subtitle_print_buffer(gpointer data)
 
 static gint _slp_s(const rfc2483_t p, const quvi_subtitle_lang_t qsl,
                    const QuviSubtitleLangProperty qslp, const gchar *n,
-                   const gboolean c)
+                   const gboolean c, const gboolean e)
 {
   gchar *s = NULL;
   quvi_subtitle_lang_get(qsl, qslp, &s);
-  return (_print(p, UTIL_PROPERTY_TYPE_SUBTITLE_LANGUAGE, n, s, -1, c));
+  return (_print(p, UTIL_PROPERTY_TYPE_SUBTITLE_LANGUAGE, n, s, -1, c, e));
 }
 
-#define _print_slp_s(n,c)\
+#define _print_slp_s(n,c,e) /* c=commented-out, e=escaped */ \
   do {\
-    if (_slp_s(p, l, n, #n, c) != EXIT_SUCCESS)\
+    if (_slp_s(p, l, n, #n, c, e) != EXIT_SUCCESS)\
       return (EXIT_FAILURE);\
   } while (0)
 
@@ -319,8 +324,8 @@ lprint_rfc2483_subtitle_lang_properties(quvi_subtitle_lang_t l,
   g_assert(data != NULL);
   p = (rfc2483_t) data;
 
-  _print_slp_s(QUVI_SUBTITLE_LANG_PROPERTY_ID, TRUE);
-  _print_slp_s(QUVI_SUBTITLE_LANG_PROPERTY_URL, FALSE);
+  _print_slp_s(QUVI_SUBTITLE_LANG_PROPERTY_ID, TRUE, FALSE);
+  _print_slp_s(QUVI_SUBTITLE_LANG_PROPERTY_URL, FALSE, TRUE);
 
   return (EXIT_SUCCESS);
 }
