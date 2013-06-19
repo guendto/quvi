@@ -1,3 +1,19 @@
+v0.9.2  [2013-06-19]
+
+Toni Gundogdu:
+  - status: Reuse the status line, do not use newlines [6e905c4]
+    - Add framework for handling SIGWINCH [9d25820]
+      - quvi-dump: Setup SIGWINCH handler [acda95f]
+      - quvi-get: Setup SIGWINCH handler [8f30984]
+      - quvi-scan: Setup SIGWINCH handler [953a3ac]
+  - FIX: Keep the input URL order [c45aa78]
+  - FIX: lutil_quvi_init: Pass handle value to quvi_errmsg [7f70b96]
+  - FIX: progressbar: Print correct "mode:" [f4fac23]
+  - lprint: rfc2483: Escape sparingly [0d85b5f]
+
+ 18 files changed, 304 insertions(+), 102 deletions(-)
+
+
 v0.9.1  [2013-05-20]
 
 This is the first official release of the 0.9 of quvi. The typical list
