@@ -31,7 +31,7 @@
 #include "setup.h"
 #include "opts.h"
 
-extern QuviError cb_status(glong, gpointer);
+extern QuviError cb_status(glong, gpointer, gpointer);
 extern struct opts_s opts;
 
 gint setup_opts(gint argc, gchar **argv, lopts_t lopts)

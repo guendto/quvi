@@ -70,7 +70,7 @@ static void _done()
   _saymsg("", FALSE);
 }
 
-static void _fetch(const quvi_word type, const gpointer p)
+static void _fetch(const quvi_word type, const gpointer data)
 {
   if (type != QUVI_CALLBACK_STATUS_DONE)
     _say(_("fetch <url> ..."));
@@ -94,12 +94,12 @@ static void _query_metainfo(const quvi_word type)
     _done();
 }
 
-QuviError cb_status(glong param, gpointer p)
+QuviError cb_status(glong status_type, gpointer data, gpointer user_data)
 {
   quvi_word status, type;
 
-  status = quvi_loword(param);
-  type = quvi_hiword(param);
+  status = quvi_loword(status_type);
+  type = quvi_hiword(status_type);
 
   switch (status)
     {
@@ -110,7 +110,7 @@ QuviError cb_status(glong param, gpointer p)
       _resolve(type);
       break;
     case QUVI_CALLBACK_STATUS_FETCH:
-      _fetch(type, p);
+      _fetch(type, data);
       break;
     default:
       g_warning("[%s] unknown quvi status code 0x%x", __func__, status);
