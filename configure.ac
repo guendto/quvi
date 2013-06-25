@@ -124,3 +124,5 @@ Build options
 Install options
   with
   - manual  ${with_manual}])
+
+# vim: set ts=2 sw=2 tw=72 expandtab:
