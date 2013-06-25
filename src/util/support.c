@@ -26,13 +26,6 @@
 
 #include "lutil.h"
 
-static glong _quvi_code(lutil_check_support_t css)
-{
-  glong qc;
-  quvi_get(css->q, QUVI_INFO_ERROR_CODE, &qc);
-  return (qc);
-}
-
 static glong _support(const lutil_check_support_t css, const gchar *url,
                       const QuviSupportsType type)
 {
@@ -41,7 +34,7 @@ static glong _support(const lutil_check_support_t css, const gchar *url,
   if (quvi_supports(css->q, url, css->mode, type) == QUVI_TRUE)
     return (QUVI_OK);
 
-  qc = _quvi_code(css);
+  qc = quvi_errcode(css->q);
   if (qc != QUVI_ERROR_NO_SUPPORT)
     {
       css->xperr(_("libquvi: while checking for support: %s"),
