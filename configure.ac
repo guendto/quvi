@@ -41,7 +41,7 @@ AC_PROG_CC
 AM_PROG_CC_C_O
 
 AC_PATH_PROG([DATE], [date], [no])
-AS_IF([test "$DATE" != x"$xno"], [build_time=`$DATE +"%F %T %z"`])
+AS_IF([test x"$DATE" != "xno"], [build_time=`$DATE +"%F %T %z"`])
 AC_DEFINE_UNQUOTED([BUILD_TIME], ["$build_time"], [We have build time])
 
 AC_PATH_PROG([A2X], [a2x], [no])
