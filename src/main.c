@@ -150,10 +150,13 @@ static gint _cmd_version(gint argc, gchar **argv)
           "    with %s, %s\n\n",
           PACKAGE_VERSION, BUILD_TIME, CANONICAL_TARGET, CC, CFLAGS);
 
-  g_print("libquvi version %s\n  built on %s for %s\n  configuration: %s\n\n",
+  g_print("libquvi version %s\n  built on %s for %s\n"
+          "    with %s\n"
+          "  configuration: %s\n\n",
           quvi_version(QUVI_VERSION),
           quvi_version(QUVI_VERSION_BUILD_TIME),
           quvi_version(QUVI_VERSION_BUILD_TARGET),
+          quvi_version(QUVI_VERSION_BUILD_CC_CFLAGS),
           quvi_version(QUVI_VERSION_CONFIGURATION));
 
   g_print("libquvi-scripts version %s\n\n",
