@@ -40,6 +40,9 @@ AC_SUBST([GETTEXT_PACKAGE], [PACKAGE])
 AC_PROG_CC
 AM_PROG_CC_C_O
 
+AC_DEFINE_UNQUOTED([CFLAGS], "$CFLAGS", [Define to compiler flags])
+AC_DEFINE_UNQUOTED([CC], "$CC", [Define to compiler])
+
 AC_PATH_PROG([DATE], [date], [no])
 AS_IF([test x"$DATE" != "xno"], [build_time=`$DATE +"%F %T %z"`])
 AC_DEFINE_UNQUOTED([BUILD_TIME], ["$build_time"], [We have build time])

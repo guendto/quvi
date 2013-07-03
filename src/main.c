@@ -146,8 +146,9 @@ static const gchar copyr[] =
 
 static gint _cmd_version(gint argc, gchar **argv)
 {
-  g_print("quvi version %s\n  built on %s for %s\n\n",
-          PACKAGE_VERSION, BUILD_TIME, CANONICAL_TARGET);
+  g_print("quvi version %s\n  built on %s for %s\n"
+          "    with %s, %s\n\n",
+          PACKAGE_VERSION, BUILD_TIME, CANONICAL_TARGET, CC, CFLAGS);
 
   g_print("libquvi version %s\n  built on %s for %s\n  configuration: %s\n\n",
           quvi_version(QUVI_VERSION),
