@@ -1,5 +1,6 @@
 // options: common: exec
 
+[[exec]]
 Exec
 ~~~~
 
