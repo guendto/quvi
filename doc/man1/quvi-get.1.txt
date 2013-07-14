@@ -52,37 +52,30 @@ Get
   Overwrite the existing file.
 
 -g, --output-regex PATTERN  (default: multiple)::
-  Apply regex PATTERN against a media property. Matches/replaces all
-  occurences (similar to the "g" modifier of Perl).
+  Apply a regex PATTERN against a media property.
   +
+The PATTERN will be used to match/replace *all* occurences -- this is
+similar to the 'g' modifier of Perl.  The option supports the 'm//'
+(match, 'm' is optional) operation  and the 's///' substitution
+operation.
++
 The syntax is similar to Perl-syntax except that this option expects a
-leading "property sequence" that indicates the media property to match
-against (e.g. %t:s/foo/bar/i).
+leading "property sequence" that specifies the media property to apply
+the regex PATTERN against.  See <<exec>> for a complete list of the
+supported "property sequences".
 +
-The following operation modes are supported:
+This option may be specified multiple times. Inside the
+linkman:quvirc[5] file, specify the PATTERNs in a comma-separated list.
+Double any backslashes inside the linkman:quvirc[5] in the PATTERN.
 +
-- 'm//'  - match operation ('m' is optional)
-- 's///' - substitution operation
-
-+
-For the list of the supported "property sequences", see `exec.external`.
-Both options use the same sequences to identify the media properties.
-+
-The following PATTERNS are used by default:
+The command applies the following PATTERNs by default:
 +
 ----
-%t:/\\w|\\s/
-%t:s/\\s\\s+/ /
-%t:s/^\\s+//
-%t:s/\\s+$//
+%t:/\w|\s/
+%t:s/\s\s+/ /
+%t:s/^\s+//
+%t:s/\s+$//
 ----
-+
-The default PATTERNS are used to cleanup the media title property value
-before it will be used to generate the file name for the saved media
-stream.
-+
-This option may be specified multiple times. In the quvirc file, specify
-the PATTERNs in a comma-separated list.
 +
 config: get.output-regex=PATTERN[,PATTERN,...]
 
@@ -92,8 +85,8 @@ config: get.output-regex=PATTERN[,PATTERN,...]
 -n, --output-name FORMAT  (default: "%t.%e")::
   Specify the file name FORMAT. This value determines how the saved
   media files will be named. All occurences of the supported media
-  property sequences will be replaced.  See '--exec' for a complete list
-  of supported "property sequences".
+  property sequences will be replaced.  See <<exec>> for a complete list
+  of the supported "property sequences".
   +
   config: get.output-name
 
