@@ -1,5 +1,5 @@
 /* quvi
- * Copyright (C) 2012  Toni Gundogdu <legatvs@gmail.com>
+ * Copyright (C) 2012,2013  Toni Gundogdu <legatvs@gmail.com>
  *
  * This file is part of quvi <http://quvi.sourceforge.net/>.
  *
@@ -39,7 +39,7 @@
 /* Check if the pattern is a s/// operation. */
 static gboolean _chk_opmode_s(const gchar *p, lutil_regex_op_t *op)
 {
-  static const gchar *op_s = "^(%\\w):s/(.*?)/(.*?)/(.*?)$";
+  static const gchar *op_s = "^(%\\w):s/(.*)/(.*)/(.*)$";
 
   GMatchInfo *m;
   GRegex *re;
@@ -78,7 +78,7 @@ static gboolean _chk_opmode_s(const gchar *p, lutil_regex_op_t *op)
 /* Check if the pattern is a m// operation. */
 static gboolean _chk_opmode_m(const gchar *p, lutil_regex_op_t *op)
 {
-  static const gchar *op_m = "^(%\\w):(.*?)/(.*?)/(.*?)$";
+  static const gchar *op_m = "^(%\\w):(.*)/(.*)/(.*)$";
 
   GMatchInfo *m;
   GRegex *re;
