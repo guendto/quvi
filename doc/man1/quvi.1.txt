@@ -52,9 +52,9 @@ QUVI_SHOW_CONFIG::
   parsing the configuration files.
 
 QUVI_CONFIG::
-  Full path of the quvirc file to read. If defined, the program will
-  parse only the specified file, skipping the search of other default
-  paths for the configuration file.
+  Full path of the linkman:quvirc[5] file to read. If defined, the
+  program will parse only the specified file, skipping the search of
+  other default paths for the configuration file.
 
 See also linkman:libquvi[3] for the other supported environment
 variables.

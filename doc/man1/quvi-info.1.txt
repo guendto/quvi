@@ -34,7 +34,8 @@ OPTIONS
   Print the value of all configuration options.
 
 -P, --print-config-paths::
-  Print the quvirc search paths. See also linkman:quvirc[5] for notes.
+  Print the linkman:quvirc[5] search paths. See also linkman:quvirc[5]
+  for notes.
 
 -p, --script-property PROPERTY::
   Print the specified script property. PROPERTY may be one of the
