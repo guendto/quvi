@@ -32,9 +32,15 @@ Exec
   %I  Media stream property: ID
   %t  Media property: title
   %i  Media property: ID
-  -- quvi-get(1) only
-  %f  Path to the saved media file
-  %e  File extension
+  %e  File extension[1]
+  %f  Path to the saved media file[2]
+
+  [1]: The file extension is parsed from the HTTP content-type header.
+       quvi-get(1) replaces this sequence with HTTP media streams only.
+       quvi-dump(2) replaces it only when --query-metainfo is used with
+       HTTP media streams.
+
+  [2]: This sequence is unique to quvi-get(1)
 +
 This option may be specified multiple times. In the linkman:quvirc[5]
 file, specify the commands in a comma-separated list.
