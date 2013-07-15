@@ -27,26 +27,26 @@
 #include "sig.h"
 
 static const lutil_cb_printerr perr = lutil_print_stderr_unless_quiet;
+static gint curr_frame = 0;
 
-static void _saymsg(const gchar *m, const gboolean with_time)
+static const gchar *frames[] =
+{
+  "o--",
+  "-o-",
+  "--o",
+  NULL
+};
+
+static void _saymsg(const gchar *m)
 {
   gsize l, i;
   gchar *s;
 
-  if (with_time == TRUE)
+  if (strlen(m) >0)
     {
-      GDateTime *n;
-      gchar *t;
-
-      n = g_date_time_new_now_local();
-      t = g_date_time_format(n, "%T");
-      g_date_time_unref(n);
-
-      if (t == NULL)
-        return;
-
-      s = g_strdup_printf("[%s] %s", t, m);
-      g_free(t);
+      if (frames[curr_frame] == NULL)
+        curr_frame = 0;
+      s = g_strdup_printf("[%s] %s", frames[curr_frame++], m);
     }
   else
     s = g_strdup(m);
@@ -62,12 +62,12 @@ static void _saymsg(const gchar *m, const gboolean with_time)
 
 static void _say(const gchar *m)
 {
-  _saymsg(m, TRUE);
+  _saymsg(m);
 }
 
 static void _done()
 {
-  _saymsg("", FALSE);
+  _saymsg("");
 }
 
 static void _fetch(const quvi_word type, const gpointer data)
