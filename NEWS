@@ -1,3 +1,20 @@
+v0.9.3  [2013-07-16]
+
+Toni Gundogdu:
+  - cb_status: Update for user_data [ed4d3bf]
+  - configure.ac: Require a2x when building from git [7301c45]
+  - DOC: --exec: Add details to %e and %f sequences [b80231d]
+  - DOC: --exec: Add the missing %e sequence [03c6357]
+  - DOC: quvi-get(1): Revise the output-regex description [cfc2b97]
+  - FIX: configure.ac: AS_IF for date(1) [60aa65e]
+  - FIX: regex pattern extraction (e.g. --output-regex) [6898a7c]
+  - status: Replace use of GDateTime with static frames [ee348cb]
+  - --version: Add CC and CFLAGS to output [7d530fa]
+  - --version: libquvi: Add QUVI_VERSION_BUILD_CC_FLAGS to output [eef985d]
+
+ 10 files changed, 78 insertions(+), 70 deletions(-)
+
+
 v0.9.2  [2013-06-19]
 
 Toni Gundogdu:
