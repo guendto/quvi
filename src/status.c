@@ -31,9 +31,10 @@ static gint curr_frame = 0;
 
 static const gchar *frames[] =
 {
-  "o--",
-  "-o-",
-  "--o",
+  "o---",
+  "-o--",
+  "--o-",
+  "---o",
   NULL
 };
 
@@ -46,7 +47,7 @@ static void _saymsg(const gchar *m)
     {
       if (frames[curr_frame] == NULL)
         curr_frame = 0;
-      s = g_strdup_printf("[%s] %s", frames[curr_frame++], m);
+      s = g_strdup_printf("status: %s %s", frames[curr_frame++], m);
     }
   else
     s = g_strdup(m);
