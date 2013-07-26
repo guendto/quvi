@@ -47,7 +47,8 @@ static void _saymsg(const gchar *m)
     {
       if (frames[curr_frame] == NULL)
         curr_frame = 0;
-      s = g_strdup_printf("status: %s %s", frames[curr_frame++], m);
+      s = g_strdup_printf(C_("Status update with {curr_anim_frame, message}",
+                             "status: %s %s"), frames[curr_frame++], m);
     }
   else
     s = g_strdup(m);
