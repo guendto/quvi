@@ -6,5 +6,5 @@ HTTP
 
 NOTE: linkman:libquvi-scripts[7] may override this value
 
-  config: http.user-agent
+  config: http.user-agent=<USERAGENT>
 

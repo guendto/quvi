@@ -29,7 +29,7 @@ Core
 NOTE: The first available subtitle language will be chosen if nothing
       matched the PATTERN
 
-  config: core.subtitle-language=PATTERN[,PATTERN,...]
+  config: core.subtitle-language=<PATTERN[,PATTERN,...]>
 
 -s, --stream PATTERN[,PATTERN,...]::
   Match a stream using a regex PATTERN. The value may be a
@@ -49,5 +49,5 @@ the media hosting service.
 
 NOTE: The first available stream is selected if nothing matched
 
-  config: core.stream=PATTERN[,PATTERN,...]
+  config: core.stream=<PATTERN[,PATTERN,...]>
 

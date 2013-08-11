@@ -6,5 +6,5 @@
   - 'mute'    - nothing at all
 
 +
-config: core.verbosity
+config: core.verbosity=<LEVEL>
 

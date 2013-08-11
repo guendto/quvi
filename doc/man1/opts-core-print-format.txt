@@ -9,5 +9,5 @@
 
 NOTE: The default value varies, see DEFAULT BEHAVIOUR.
 
-  config: core.print-format
+  config: core.print-format=<FORMAT>
 

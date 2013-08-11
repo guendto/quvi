@@ -40,7 +40,7 @@ include::opts-core.txt[]
   FORMATs are determined by the current selection of the subtitle export
   'libquvi-scripts(7)'.
   +
-  config: core.subtitle-export-format
+  config: core.subtitle-export-format=<FORMAT>
 
 include::opts-core-verbosity.txt[]
 include::opts-exec.txt[]
@@ -77,7 +77,7 @@ The command applies the following PATTERNs by default:
 %t:s/\s+$//
 ----
 +
-config: get.output-regex=PATTERN[,PATTERN,...]
+config: get.output-regex=<PATTERN[,PATTERN,...]>
 
 -f, --output-file FILE::
   Write the media to the specified FILE.
@@ -88,12 +88,12 @@ config: get.output-regex=PATTERN[,PATTERN,...]
   property sequences will be replaced.  See <<exec>> for a complete list
   of the supported "property sequences".
   +
-  config: get.output-name
+  config: get.output-name=<FORMAT>
 
 -i, --output-dir DIR  (default: cwd)::
   Write the saved media to the DIR.
   +
-  config: get.output-dir
+  config: get.output-dir=<DIR>
 
 -r, --resume-from OFFSET  (default: 0)::
   Specify the offset from which the transfer should continue.  If this
@@ -121,7 +121,7 @@ queried by sending a HTTP HEAD request before the transfer begins. A
 possible workaround is to specify from which offset the transfer should
 continue, but this requires that the user determines the value by hand.
   +
-  config: get.resume-from
+  config: get.resume-from=<OFFSET>
 
 -k, --skip-transfer::
   Do not save the media.
@@ -133,7 +133,7 @@ continue, but this requires that the user determines the value by hand.
   disables the throttle. This setting affects only the saving process of
   the media stream.
   +
-  config: get.throttle
+  config: get.throttle=<RATE>
 
 include::opts-http.txt[]
 
