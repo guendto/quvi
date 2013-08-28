@@ -1,3 +1,14 @@
+v0.9.3.1  [2013-08-28]
+
+Toni Gundogdu:
+  - AC_PREREQ: Bump to 2.69 [0d0234f]
+  - DOC: Add chevs and (missing) ARGNAMEs to "config:" lines [bd56d12]
+  - status: Mark message output for translation [43c0308]
+  - status: Redo frames to look similar to progressbar frames [ad7af01]
+
+ 8 files changed, 19 insertions(+), 17 deletions(-)
+
+
 v0.9.3  [2013-07-16]
 
 Toni Gundogdu:
