@@ -6,6 +6,9 @@ AC_PREREQ([2.69])
 AC_INIT([quvi], m4_esyscmd([./gen-ver.sh -c | tr -d '\n']),
         [http://quvi.sf.net/bugs/],[],[http://quvi.sf.net/])
 
+AC_DEFINE_UNQUOTED([BUILD_OPTS], "$@",
+  [Define to configure invocation command line options])
+
 AC_CONFIG_SRCDIR([src/main.c])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_AUX_DIR([config.aux])
