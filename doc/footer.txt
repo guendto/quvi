@@ -1,9 +1,14 @@
 
 FURTHER RESOURCES
 -----------------
-The development code may be cloned from
-`git://repo.or.cz/quvi-tool.git`. The gitweb is accessible at
-`http://repo.or.cz/w/quvi-tool.git`.
+Home::
+  `http://quvi.sourceforge.net/`
+
+Development code::
+  `git://repo.or.cz/quvi-tool.git`
+
+gitweb::
+  `http://repo.or.cz/w/quvi-tool.git`
 
 Authors
 -------
