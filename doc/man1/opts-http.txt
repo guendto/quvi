@@ -1,6 +1,12 @@
 HTTP
 ~~~~
 
+-c, --enable-cookies::
+  Have libcurl parse the received cookies and use them in the subsequent
+  HTTP requests.
+  +
+  config: http.enable-cookies=<boolean>
+
 -u, --user-agent USERAGENT  (default: Mozilla/5.0)::
   Identify as USERAGENT to the HTTP server.
 

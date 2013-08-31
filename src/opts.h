@@ -58,6 +58,7 @@ struct opts_s
   } get;
   struct
   {
+    gboolean enable_cookies;
     gchar *user_agent;
   } http;
   gchar **rargs;

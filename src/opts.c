@@ -119,6 +119,10 @@ const GOptionEntry option_entries[] =
   },
   /* http */
   {
+    "enable-cookies", 'c', 0, G_OPTION_ARG_NONE, &opts.http.enable_cookies,
+    NULL, NULL
+  },
+  {
     "user-agent", 'u', 0, G_OPTION_ARG_STRING, &opts.http.user_agent,
     NULL, NULL
   },
@@ -258,6 +262,9 @@ void cb_parse_keyfile_values(GKeyFile *kf, const gchar *fpath)
                         "throttle", &opts.get.throttle);
 
   /* http */
+
+  lopts_keyfile_get_bool(kf, fpath, g_http,
+                         "enable-cookies", &opts.http.enable_cookies);
 
   lopts_keyfile_get_str(kf, NULL, fpath, g_http, NULL,
                         "user-agent", &opts.http.user_agent);

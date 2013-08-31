@@ -71,6 +71,7 @@ gint setup_quvi(quvi_t *q)
   r = lutil_quvi_init(q, &o);
   if (r == EXIT_SUCCESS)
     {
+      quvi_set(*q, QUVI_OPTION_ALLOW_COOKIES, opts.http.enable_cookies);
       quvi_set(*q, QUVI_OPTION_USER_AGENT, opts.http.user_agent);
       quvi_set(*q, QUVI_OPTION_CALLBACK_STATUS, cb_status);
     }
