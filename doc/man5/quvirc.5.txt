@@ -92,6 +92,10 @@ output-regex = %t:/\\w|\\s/,%t:s/\\s\\s+/ /
 output-name = %t_%i.%e
 resume-from = -1
 throttle = 500
+
+[http]
+#user-agent = foo/1.0
+enable-cookies = true
 ----
 
 SEE ALSO
