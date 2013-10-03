@@ -238,7 +238,9 @@ gint main(gint argc, gchar **argv)
   argv++;
 
   _setup_gettext();
+#if !GLIB_CHECK_VERSION(2,35,0)
   g_type_init();
+#endif
 
   exit_status = _run_internal_cmd(argc, argv);
   return (_cleanup());
