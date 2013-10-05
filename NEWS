@@ -1,3 +1,15 @@
+v0.9.4  [2013-10-05]
+
+Toni Gundogdu:
+  - Add --enable-cookies [9b955b2]
+  - g_type_init: no longer needs to be called [9dd0250]
+  - Revise --version output [b385738]
+  - --version: Add "configuration" to output [30d6483]
+  - --version: Add QUVI_VERSION_SCRIPTS_CONFIGURATION to output [b0831e0]
+
+ 8 files changed, 44 insertions(+), 16 deletions(-)
+
+
 v0.9.3.1  [2013-08-28]
 
 Toni Gundogdu:
