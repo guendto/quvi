@@ -47,7 +47,7 @@ static const struct _media_xchg_table_s media_xchg_table[] =
   {0, 0, NULL}
 };
 
-static const gchar default_str[] = N_("default");
+static const gchar *default_str = N_("default");
 
 /* Return a media property value. */
 static gchar *_qm_get(quvi_media_t qm, const gint i)
