@@ -141,15 +141,20 @@ static gint _end_e(const xml_t p, const ErrorMessage e, const gchar *w)
   return (r);
 }
 
+extern const gchar *reserved_chars;
+
 static gint _write_attr(const xml_t p, const gchar *n, const gchar *s)
 {
   xmlChar *e;
   gint r;
 
-  e = xmlURIEscapeStr(BAD_CAST s, NULL);
+  e = xmlURIEscapeStr(BAD_CAST s, BAD_CAST reserved_chars);
+
+
   r = (xmlTextWriterWriteAttribute(p->w, BAD_CAST n, e) <0)
       ? EXIT_FAILURE
       : EXIT_SUCCESS;
+
   xmlFree(e);
 
   if (r != EXIT_SUCCESS)
@@ -206,7 +211,7 @@ void lprint_xml_errmsg(const gchar *fmt, ...)
   va_start(args, fmt);
   if (g_vasprintf(&s, fmt, args) >0)
     {
-      xmlChar *e = xmlURIEscapeStr(BAD_CAST s, NULL);
+      xmlChar *e = xmlURIEscapeStr(BAD_CAST s, BAD_CAST reserved_chars);
       g_printerr("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
                  "<error message=\"%s\" />", e);
       xmlFree(e);

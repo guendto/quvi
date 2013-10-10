@@ -103,6 +103,8 @@ static gint _print_buffer(const json_t p)
   return (EXIT_SUCCESS);
 }
 
+extern const gchar *reserved_chars;
+
 void lprint_json_errmsg(const gchar *fmt, ...)
 {
   va_list args;
@@ -111,7 +113,7 @@ void lprint_json_errmsg(const gchar *fmt, ...)
   va_start(args, fmt);
   if (g_vasprintf(&s, fmt, args) >0)
     {
-      gchar *e = g_uri_escape_string(s, NULL, TRUE);
+      gchar *e = g_uri_escape_string(s, reserved_chars, FALSE);
       g_printerr("{\"error\" : \"%s\"}\n", e);
       g_free(e);
       g_free(s);
@@ -158,7 +160,7 @@ static gint _set_member(const json_t p, const lutilPropertyType pt,
   json_builder_set_member_name(p->b, n);
   if (s != NULL)
     {
-      gchar *e = g_uri_escape_string(s, NULL, TRUE);
+      gchar *e = g_uri_escape_string(s, reserved_chars, FALSE);
       json_builder_add_string_value(p->b, e);
       g_free(e);
     }
@@ -455,7 +457,7 @@ gint lprint_json_scan_properties(quvi_scan_t qs, gpointer data)
       json_builder_begin_object(p->b);
       json_builder_set_member_name(p->b, "url");
 
-      e = g_uri_escape_string(s, NULL, TRUE);
+      e = g_uri_escape_string(s, reserved_chars, FALSE);
       json_builder_add_string_value(p->b, e);
 
       json_builder_end_object(p->b);

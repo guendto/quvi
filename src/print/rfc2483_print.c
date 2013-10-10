@@ -70,6 +70,8 @@ static gint _rfc2483_handle_free(gpointer data, const gint r)
   return (r);
 }
 
+extern const gchar *reserved_chars;
+
 static gint _print(const rfc2483_t p, const lutilPropertyType pt,
                    const gchar *n, const gchar *s, const gdouble d,
                    const gboolean comment_out, const gboolean escape)
@@ -87,7 +89,7 @@ static gint _print(const rfc2483_t p, const lutilPropertyType pt,
     {
       if (escape == TRUE)
         {
-          gchar *e = g_uri_escape_string(s, NULL, TRUE);
+          gchar *e = g_uri_escape_string(s, reserved_chars, FALSE);
           g_print("%s%s\n", h, e);
           g_free(e);
         }
@@ -275,7 +277,7 @@ gint lprint_rfc2483_scan_properties(quvi_scan_t qs, gpointer data)
   g_print(_("# Embedded media URLs\n#\n"));
   while ( (s = quvi_scan_next_media_url(qs)) != NULL)
     {
-      gchar *e = g_uri_escape_string(s, NULL, TRUE);
+      gchar *e = g_uri_escape_string(s, reserved_chars, FALSE);
       g_print("%s\n", e);
       g_free(e);
     }

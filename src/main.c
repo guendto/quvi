@@ -29,6 +29,8 @@
 #include "opts.h"
 #include "cmd.h"
 
+const gchar *reserved_chars = "!*'();:@&=+$,/?#[]";
+
 struct opts_s opts;
 gint exit_status;
 gchar *argv0;
