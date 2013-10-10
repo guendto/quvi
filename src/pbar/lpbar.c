@@ -29,7 +29,7 @@ typedef enum
 {
   Ki = 1024,
   Mi = 1048576,
-  Gi = 1073741824,
+  Gi = 1073741824
 } ieee_1541;
 
 #define _s(n) #n
