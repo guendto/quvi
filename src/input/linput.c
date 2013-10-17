@@ -21,73 +21,42 @@
 #include "config.h"
 
 #include <unistd.h>
+#include <stdlib.h>
 #include <string.h>
 #include <glib/gi18n.h>
 
-#include "lutil.h"
 #include "linput.h"
+#include "lutil.h"
 
-static gchar *_read_stdin(linput_t linput)
+static gchar *_read_stdin()
 {
-  gchar *s, *r, *p;
   GIOChannel *c;
-  gsize n, sn;
+  gchar *r, *s;
+  gsize n;
 
   c = g_io_channel_unix_new(STDIN_FILENO);
-  s = NULL;
-  r = NULL;
+  r = s = NULL;
   n = 0;
 
   while (g_io_channel_read_line(c, &s, NULL, NULL, NULL) != G_IO_STATUS_EOF)
     {
-      sn = strlen(s);
-      p = g_realloc(r, n+sn+1);
+      gchar *p;
+      gsize l;
+
+      l = strlen(s);
+      p = g_realloc(r, n+l+1);
+
       if (p != NULL)
         {
           r = p;
-          memcpy(&(r[n]), s, sn);
-          n += sn;
+          memcpy(&r[n], s, l);
+          n += l;
           r[n] = '\0';
         }
       g_free(s);
-      s = NULL;
     }
+  g_io_channel_unref(c);
   return (r);
-}
-
-static gboolean _has_uri_scheme(const gchar *s, gchar **dst)
-{
-  gchar *p, *t;
-  gboolean r;
-
-  t = g_uri_unescape_string(s, NULL);
-  p = g_uri_parse_scheme(t);
-  r = (p != NULL) ? TRUE:FALSE;
-  g_free(p);
-
-  if (dst != NULL && r == TRUE)
-    *dst = t;
-  else
-    g_free(t);
-
-  return (r);
-}
-
-static void _extract_urls(const gchar *b, linput_t l)
-{
-  gchar **r, *u;
-  gint i;
-
-  r = g_uri_list_extract_uris(b);
-  i = 0;
-
-  while (r[i] != NULL)
-    {
-      if (_has_uri_scheme(r[i], &u) == TRUE)
-        l->url.input = lutil_slist_prepend_if_unique(l->url.input, u);
-      ++i;
-    }
-  g_strfreev(r);
 }
 
 static gchar *_read_file(const gchar *fpath)
@@ -102,72 +71,129 @@ static gchar *_read_file(const gchar *fpath)
     {
       if (e != NULL)
         {
-          g_printerr(_("error: %s: while reading file: %s\n"),
-                     fpath, e->message);
+          g_printerr(_("error: while reading file: %s\n"), e->message);
           g_error_free(e);
-          e = NULL;
         }
     }
   return (r);
 }
 
-static void _no_rargs(linput_t linput)
+static gint _extract_uris(linput_t, const gchar*);
+
+static gint _read_from_uri(linput_t p, const gchar *u)
 {
-  gchar *b = _read_stdin(linput);
-  if (b != NULL)
+  GError *e;
+  gchar *f;
+  gint r;
+
+  r = EXIT_FAILURE;
+  e = NULL;
+  f = g_filename_from_uri(u, NULL, &e);
+
+  if (f !=NULL)
     {
-      _extract_urls(b, linput);
-      g_free(b);
+      gchar *c = _read_file(f);
+      if (c !=NULL)
+        {
+          r = _extract_uris(p, c);
+          r = EXIT_SUCCESS;
+          g_free(c);
+        }
+      g_free(f);
     }
+  else
+    {
+      g_printerr(_("error: while converting to URI: %s\n"), e->message);
+      g_error_free(e);
+    }
+  return (r);
 }
 
-static void _have_rargs(linput_t linput, const gchar **rargs)
+static gint _determine_input(linput_t p, const gboolean try_read_as_file,
+                             const gchar *invalid_msg, const gchar *s)
 {
-  static const gchar *_E =
-    N_("error: ignoring input value `%s': not an URL or a file\n");
+  gchar *c;
+  gint r;
 
-  gchar *p, *u;
-  gint i;
+  c = g_uri_parse_scheme(s);
+  r = EXIT_SUCCESS;
 
-  i = 0;
-  while (rargs[i] != NULL)
+  if ((c ==NULL || strlen(c) ==0) && try_read_as_file ==TRUE)
     {
-      p = (gchar*) rargs[i++];
-      g_strstrip(p);
-
-      /* If file. */
-      if (g_file_test(p, G_FILE_TEST_IS_REGULAR) == TRUE)
+      gchar *b = _read_file(s);
+      if (b != NULL)
         {
-          gchar *b = _read_file(p);
-          if (b != NULL)
-            {
-              _extract_urls(b, linput);
-              g_free(b);
-            }
+          r = _extract_uris(p, b);
+          g_free(b);
         }
-      /* If URI. */
-      else if (_has_uri_scheme(p, &u) == TRUE)
-        {
-          linput->url.input =
-            lutil_slist_prepend_if_unique(linput->url.input, u);
-        }
-      /* Unable to determine. */
       else
-        g_printerr(g_dgettext(GETTEXT_PACKAGE, _E), p);
+        r = EXIT_FAILURE;
     }
+  else if (g_strcmp0(c, "http") ==0 || g_strcmp0(c, "https") ==0)
+    p->url.input = lutil_slist_prepend_if_unique(p->url.input, s);
+  else if (g_strcmp0(c, "file") ==0)
+    r = _read_from_uri(p, s);
+  else
+    {
+      g_printerr(g_dgettext(GETTEXT_PACKAGE, invalid_msg), s);
+      r = EXIT_FAILURE;
+    }
+  g_free(c);
+  return (r);
 }
 
-void linput_new(linput_t linput, const gchar **rargs)
+static gint _extract_uris(linput_t p, const gchar *s)
 {
+  static const gchar *E = N_("error: %s: an invalid URI\n");
+
+  gchar **u;
+  gint i, r;
+
+  u = g_uri_list_extract_uris(s);
+
+  for (i=0, r=EXIT_SUCCESS; u[i] !=NULL && r==EXIT_SUCCESS; ++i)
+    r = _determine_input(p, FALSE, E, u[i]);
+
+  g_strfreev(u);
+  return (r);
+}
+
+static gint _parse_without_rargs(linput_t p)
+{
+  gchar *c;
+  gint r;
+  c = _read_stdin();
+  r = _extract_uris(p, c);
+  g_free(c);
+  return (r);
+}
+
+static gint _parse_with_rargs(linput_t p, const gchar **rargs)
+{
+  static const gchar *E =
+    N_("error: %s: neither a valid URI or a local file\n");
+
+  gint i, r;
+  for (i=0, r=EXIT_SUCCESS; rargs[i] !=NULL && r ==EXIT_SUCCESS; ++i)
+    r = _determine_input(p, TRUE, E, rargs[i]);
+
+  return (r);
+}
+
+gint linput_new(linput_t linput, const gchar **rargs)
+{
+  gint r;
+
   g_assert(linput != NULL);
   g_assert(linput->url.input == NULL);
 
   if (rargs == NULL || g_strv_length((gchar**) rargs) == 0)
-    _no_rargs(linput);
+    r = _parse_without_rargs(linput);
   else
-    _have_rargs(linput, rargs);
+    r = _parse_with_rargs(linput, rargs);
 
   linput->url.input = g_slist_reverse(linput->url.input);
+  return (r);
 }
 
 void linput_free(linput_t linput)

@@ -1,5 +1,5 @@
 /* quvi
- * Copyright (C) 2012  Toni Gundogdu <legatvs@gmail.com>
+ * Copyright (C) 2012,2013  Toni Gundogdu <legatvs@gmail.com>
  *
  * This file is part of quvi <http://quvi.sourceforge.net/>.
  *
@@ -31,7 +31,7 @@ struct linput_s
 
 typedef struct linput_s *linput_t;
 
-void linput_new(linput_t, const gchar**);
+gint linput_new(linput_t, const gchar**);
 void linput_free(linput_t);
 
 #endif /* linput_h */
