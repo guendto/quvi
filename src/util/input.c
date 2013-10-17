@@ -30,7 +30,9 @@ gint lutil_parse_input(gpointer p, const gchar **rargs)
 {
   linput_t l = (linput_t) p;
 
-  linput_new(l, rargs);
+  if (linput_new(l, rargs) != EXIT_SUCCESS)
+    return (EXIT_FAILURE);
+
   if (g_slist_length(l->url.input) ==0)
     {
       g_printerr(_("error: no input URL\n"));
