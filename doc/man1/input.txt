@@ -4,5 +4,5 @@ INPUT
 The command will read stdin by default.  The input is expected to
 _contain_ URLs. The command arguments are expected to be either URLs or
 file paths. If the input is read from either stdin or a file, the
-contents are read as RFC2483.
+contents are read as RFC2483. The input may contain file URIs.
 
