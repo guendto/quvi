@@ -1,3 +1,15 @@
+v0.9.5  [2013-11-10]
+
+Toni Gundogdu:
+  - FIX: compilation errors
+    - array initialized from parenthesized string constant [384a628]
+    - comma at end of enumerator list [0c23359]
+  - linput: Rewrite input parsing completely [d92133c]
+  - quvi-dump: Do not escape reserved chars in URLs [d796a73]
+
+ 10 files changed, 135 insertions(+), 96 deletions(-)
+
+
 v0.9.4  [2013-10-05]
 
 Toni Gundogdu:
