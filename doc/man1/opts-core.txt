@@ -14,6 +14,11 @@ Core
   Query and print the available media subtitles. See also
   '--print-format'.
 
+-z, --print-status::
+  Print status updates to stderr.
+  +
+  config: core.print-status=<boolean>
+
 -S, --print-streams::
   Query and print the available media streams. See also
   '--print-format'.

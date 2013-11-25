@@ -47,6 +47,10 @@ const GOptionEntry option_entries[] =
     NULL, NULL
   },
   {
+    "print-status", 'z', 0, G_OPTION_ARG_NONE, &opts.core.print_status,
+    NULL, NULL
+  },
+  {
     "subtitle-export-format", 'L', 0, G_OPTION_ARG_STRING,
     &opts.core.subtitle_export_format, NULL, NULL
   },
@@ -203,6 +207,9 @@ void cb_parse_keyfile_values(GKeyFile *kf, const gchar *fpath)
 
   lopts_keyfile_get_bool(kf, fpath, g_core,
                          "check-mode-offline", &opts.core.check_mode_offline);
+
+  lopts_keyfile_get_bool(kf, fpath, g_core,
+                         "print-status", &opts.core.print_status);
 
   lopts_keyfile_get_str(kf, cb_chk_str, fpath, g_core,
                         dumpformat_possible_values,

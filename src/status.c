@@ -24,6 +24,7 @@
 #include <quvi.h>
 
 #include "lutil.h"
+#include "opts.h"
 #include "sig.h"
 
 static const lutil_cb_printerr perr = lutil_print_stderr_unless_quiet;
@@ -38,10 +39,15 @@ static const gchar *frames[] =
   NULL
 };
 
+extern struct opts_s opts;
+
 static void _saymsg(const gchar *m)
 {
   gsize l, i;
   gchar *s;
+
+  if (opts.core.print_status == FALSE)
+    return;
 
   if (strlen(m) >0)
     {

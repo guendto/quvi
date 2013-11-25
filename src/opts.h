@@ -30,6 +30,7 @@ struct opts_s
     gchar *subtitle_language;
     gboolean print_subtitles;
     gboolean print_streams;
+    gboolean print_status;
     gchar *print_format;
     gchar *verbosity;
     gchar *stream;
